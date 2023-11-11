@@ -1,0 +1,9 @@
+version: '3.6'
+
+services:
+  chatgpt:
+    build: .
+    ports:
+      - 3333:3333
+    environment:
+      - 'OPENAI_API_KEY='
