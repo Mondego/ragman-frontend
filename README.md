@@ -1,5 +1,26 @@
 # T.E.A.C.H.
 
+## File Transfer
+- transfer `Chat/Chat.tsx` to server
+```sh
+scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/components/Chat/Chat.tsx irisma@clotho.ics.uci.edu:/home/irisma/ai_tutor_research/chatbot-ui/components/Chat/Chat.tsx
+```
+
+- transfer `Chat/ChatInput.tsx` to server
+```sh
+scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/components/Chat/ChatInput.tsx irisma@clotho.ics.uci.edu:/home/irisma/ai_tutor_research/chatbot-ui/components/Chat/Chat.tsx
+```
+
+- transfer `pages/api/home/home.tsx` to server
+```sh
+scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/pages/api/home/home.tsx irisma@clotho.ics.uci.edu:/home/irisma/ai_tutor_research/chatbot-ui/pages/api/home/home.tsx
+```
+
+- transfer `pages/_document.tsx` to server
+```sh
+scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/pages/_document.tsx irisma@clotho.ics.uci.edu:/home/irisma/ai_tutor_research/chatbot-ui/pages/_document.tsx
+```
+
 ## News
 
 T.E.A.C.H. 2.0 is out as an updated, hosted product!
