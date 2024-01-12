@@ -1,6 +1,6 @@
 # Contributing Guidelines
 
-**Welcome to Chatbot UI!**
+**Welcome to T.E.A.C.H.!**
 
 We appreciate your interest in contributing to our project.
 
