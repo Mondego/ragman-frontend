@@ -162,11 +162,20 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
             done = doneReading;
             const chunkValue = decoder.decode(value);
             text += chunkValue;
+            
+            
             if (isFirst) {
               isFirst = false;
+              let response_timestamp = message['timestamp'];
+              
+              if (!response_timestamp) {
+                const currentDate: Date = new Date();
+                response_timestamp = currentDate.toLocaleString('en-US', { timeZone: 'America/Los_Angeles',hour12: false});
+              } 
+              
               const updatedMessages: Message[] = [
                 ...updatedConversation.messages,
-                { role: 'assistant', content: chunkValue },
+                { role: 'assistant', content: chunkValue, timestamp: response_timestamp},
               ];
               updatedConversation = {
                 ...updatedConversation,
@@ -214,9 +223,16 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           homeDispatch({ field: 'messageIsStreaming', value: false });
         } else {
           const { answer } = await response.json();
+          
+          let response_timestamp = await answer['timestamp'];         
+          if (!response_timestamp) {
+            const currentDate: Date = new Date();
+            response_timestamp = currentDate.toLocaleString('en-US', { timeZone: 'America/Los_Angeles',hour12: false});
+          } 
+
           const updatedMessages: Message[] = [
             ...updatedConversation.messages,
-            { role: 'assistant', content: answer },
+            { role: 'assistant', content: answer, timestamp: response_timestamp },
           ];
           updatedConversation = {
             ...updatedConversation,

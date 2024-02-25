@@ -27,6 +27,7 @@ import HomeContext from '@/pages/api/home/home.context';
 import { PluginSelect } from './PluginSelect';
 import { PromptList } from './PromptList';
 import { VariableModal } from './VariableModal';
+import { time } from 'console';
 
 interface Props {
   onSend: (message: Message, plugin: Plugin | null) => void;
@@ -97,7 +98,10 @@ export const ChatInput = ({
       return;
     }
 
-    onSend({ role: 'user', content }, plugin);
+    const currentDate: Date = new Date();
+    const timestamp = currentDate.toLocaleString('en-US', { timeZone: 'America/Los_Angeles',hour12: false});
+
+    onSend({ role: 'user', content, timestamp }, plugin);
     setContent('');
     setPlugin(null);
 

@@ -110,7 +110,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
     Response:
     `;
 
-    const answerMessage: Message = { role: 'user', content: answerPrompt };
+    const currentDate: Date = new Date();
+    const timestamp = currentDate.toLocaleString('en-US', { timeZone: 'America/Los_Angeles',hour12: false});
+    const answerMessage: Message = { role: 'user', content: answerPrompt, timestamp };
 
     const answerRes = await fetch(`${OPENAI_API_HOST}/v1/chat/completions`, {
       headers: {
@@ -130,7 +132,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
           },
           answerMessage,
         ],
-        max_tokens: 1000,
+        max_tokens: 3000,
         temperature: 1,
         stream: false,
       }),
