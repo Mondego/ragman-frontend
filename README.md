@@ -1,6 +1,32 @@
 # T.E.A.C.H.
 
 ## File Transfer
+
+- transfer `Chat/Chat.tsx` to server
+```
+scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/pages/api/chat.ts irisma@clotho.ics.uci.edu:/home/irisma/ai_tutor_research/chatbot-uipages/api/chat.ts
+```
+
+- transfer `Chat/Chat.tsx` to server
+```
+scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/pages/api/google.ts irisma@clotho.ics.uci.edu:/home/irisma/ai_tutor_research/chatbot-ui/pages/api/google.ts
+```
+
+- transfer `Chat/Chat.tsx` to server
+```
+scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/types/chat.ts irisma@clotho.ics.uci.edu:/home/irisma/ai_tutor_research/chatbot-ui/types/chat.ts
+```
+
+- transfer `Chat/Chat.tsx` to server
+```
+scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/utils/server/index.ts irisma@clotho.ics.uci.edu:/home/irisma/ai_tutor_research/chatbot-ui/utils/server/index.ts
+```
+
+- transfer `Chat/Chat.tsx` to server
+```
+scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/utils/app/clean.ts irisma@clotho.ics.uci.edu:/home/irisma/ai_tutor_research/chatbot-ui/utils/app/clean.ts
+```
+
 - transfer `Chat/Chat.tsx` to server
 ```sh
 scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/components/Chat/Chat.tsx irisma@clotho.ics.uci.edu:/home/irisma/ai_tutor_research/chatbot-ui/components/Chat/Chat.tsx
@@ -76,7 +102,7 @@ docker run -e OPENAI_API_KEY=xxxxxxxx -p 3000:3000 ghcr.io/mckaywrigley/chatbot-
 **1. Clone Repo**
 
 ```bash
-git clone https://github.com/mckaywrigley/chatbot-ui.git
+git clone https://github.com/irisma00/ai_tutor_frontend.git
 ```
 
 **2. Install Dependencies**
@@ -87,7 +113,7 @@ npm i
 
 **3. Provide OpenAI API Key**
 
-Create a .env.local file in the root of the repo with your OpenAI API Key:
+Create a .env.local file in the root of the repo with your OpenAI API Key: (This step is unnecessary, because we call openai API from backend, but you can set the key to make sure the frontend is running)
 
 ```bash
 OPENAI_API_KEY=YOUR_KEY
@@ -98,14 +124,16 @@ OPENAI_API_KEY=YOUR_KEY
 > Additionally, if you have multiple OpenAI Organizations, you can set `OPENAI_ORGANIZATION` to specify one.
 
 **4. Run App**
+* run locally
+    ```bash
+    npm run dev
+    ```
 
-```bash
-npm run dev -- -p 3333
-```
+* use this command for server running
+    ```bash
+    npm run dev -- -p 3333
+    ```
 
-```bash
-npm run dev
-```
 
 **5. Use It**
 
