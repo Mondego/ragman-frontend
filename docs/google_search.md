@@ -1,6 +1,6 @@
 # Google Search Tool
 
-Use the Google Search API to search the web in T.E.A.C.H..
+Use the Google Search API to search the web in RAGMan-frontend.
 
 ## How To Enable
 

@@ -13,7 +13,7 @@ export default function Document(props: Props) {
     <Html lang={currentLocale}>
       <Head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-title" content="T.E.A.C.H."></meta>
+        <meta name="apple-mobile-web-app-title" content={process.env.NEXT_PUBLIC_NAME}></meta>
       </Head>
       <body>
         <Main />

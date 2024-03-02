@@ -368,17 +368,17 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
       {!(apiKey || serverSideApiKeyIsSet) ? (
         <div className="mx-auto flex h-full w-[300px] flex-col justify-center space-y-6 sm:w-[600px]">
           <div className="text-center text-4xl font-bold text-black dark:text-white">
-            Welcome to T.E.A.C.H.
+            Welcome to {process.env.NEXT_PUBLIC_NAME}
           </div>
           <div className="text-center text-lg text-black dark:text-white">
-            <div className="mb-8">{`T.E.A.C.H. is an open source clone of OpenAI's ChatGPT UI.`}</div>
+            <div className="mb-8">{process.env.NEXT_PUBLIC_NAME + ` is based on RAGMan-frontend, an open source clone of OpenAI's ChatGPT UI.`}</div>
             <div className="mb-2 font-bold">
-              Important: T.E.A.C.H. is 100% unaffiliated with OpenAI.
+              Important: {process.env.NEXT_PUBLIC_NAME} is 100% unaffiliated with OpenAI.
             </div>
           </div>
           <div className="text-center text-gray-500 dark:text-gray-400">
             <div className="mb-2">
-              T.E.A.C.H. allows you to plug in your API key to use this UI with
+            {process.env.NEXT_PUBLIC_NAME} +  allows you to plug in your API key to use this UI with
               their API.
             </div>
             <div className="mb-2">
@@ -421,7 +421,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                         <Spinner size="16px" className="mx-auto" />
                       </div>
                     ) : (
-                      'T.E.A.C.H.'
+                      process.env.NEXT_PUBLIC_NAME 
                     )}
                   </div>
 
