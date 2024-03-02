@@ -1,6 +1,8 @@
 # Contributing Guidelines
 
-**Welcome to T.E.A.C.H.!**
+**Welcome to RAGMan frontend!**
+
+This is a fork of [ChatBot-UI](https://github.com/mckaywrigley/chatbot-ui) further developed by the Mondego group at UC Irvine.
 
 We appreciate your interest in contributing to our project.
 
@@ -22,8 +24,8 @@ We welcome the following types of contributions:
 To get started, fork the project on GitHub and clone it locally on your machine. Then, create a new branch to work on your changes.
 
 ```
-git clone https://github.com/mckaywrigley/chatbot-ui.git
-cd chatbot-ui
+git clone https://github.com/Mondego/ragman-frontend/ragman-frontend.git
+cd ragman-frontend
 git checkout -b my-branch-name
 
 ```
@@ -42,4 +44,4 @@ Before submitting your pull request, please make sure your changes pass our auto
 
 ## Contact
 
-If you have any questions or need help getting started, feel free to reach out to me on [Twitter](https://twitter.com/mckaywrigley).
+If you have any questions or need help getting started, feel free to reach out to [Iris Ma](mailto:huaiyaom@uci.edu).

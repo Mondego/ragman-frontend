@@ -1,103 +1,15 @@
-# T.E.A.C.H.
-
-## File Transfer
-
-- transfer `Chat/Chat.tsx` to server
-```
-scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/pages/api/chat.ts irisma@clotho.ics.uci.edu:/home/irisma/ai_tutor_research/chatbot-uipages/api/chat.ts
-```
-
-- transfer `Chat/Chat.tsx` to server
-```
-scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/pages/api/google.ts irisma@clotho.ics.uci.edu:/home/irisma/ai_tutor_research/chatbot-ui/pages/api/google.ts
-```
-
-- transfer `Chat/Chat.tsx` to server
-```
-scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/types/chat.ts irisma@clotho.ics.uci.edu:/home/irisma/ai_tutor_research/chatbot-ui/types/chat.ts
-```
-
-- transfer `Chat/Chat.tsx` to server
-```
-scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/utils/server/index.ts irisma@clotho.ics.uci.edu:/home/irisma/ai_tutor_research/chatbot-ui/utils/server/index.ts
-```
-
-- transfer `Chat/Chat.tsx` to server
-```
-scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/utils/app/clean.ts irisma@clotho.ics.uci.edu:/home/irisma/ai_tutor_research/chatbot-ui/utils/app/clean.ts
-```
-
-- transfer `Chat/Chat.tsx` to server
-```sh
-scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/components/Chat/Chat.tsx irisma@clotho.ics.uci.edu:/home/irisma/ai_tutor_research/chatbot-ui/components/Chat/Chat.tsx
-```
-
-- transfer `Chat/ChatInput.tsx` to server
-```sh
-scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/components/Chat/ChatInput.tsx irisma@clotho.ics.uci.edu:/home/irisma/ai_tutor_research/chatbot-ui/components/Chat/ChatInput.tsx
-```
-
-- transfer `pages/api/home/home.tsx` to server
-```sh
-scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/pages/api/home/home.tsx irisma@clotho.ics.uci.edu:/home/irisma/ai_tutor_research/chatbot-ui/pages/api/home/home.tsx
-```
-
-- transfer `pages/_document.tsx` to server
-```sh
-scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/pages/_document.tsx irisma@clotho.ics.uci.edu:/home/irisma/ai_tutor_research/chatbot-ui/pages/_document.tsx
-```
-
-## News
-
-T.E.A.C.H. 2.0 is out as an updated, hosted product!
-
-Check out [Takeoff Chat](https://www.takeoffchat.com/).
-
-Open source version coming soon!
+# RAGMan frontend
 
 ## About
 
-T.E.A.C.H. is an open source chat UI for AI models.
+RAGMan frontend is a fork of [ChatBot-UI](https://github.com/mckaywrigley/chatbot-ui) maintained and further developed by the Mondego group at UC Irvine. Unlike the original chatbot-ui, RAGMan frontend requires a second web app, RAGMan-backend, to work. This is just the user-facing UI. All the fancy intelligent actions are done in the backend.
 
-See a [demo](https://twitter.com/mckaywrigley/status/1640380021423603713?s=46&t=AowqkodyK6B4JccSOxSPew).
+![RAGMan frontend](./public/screenshots/screenshot-0402023.jpg)
 
-![T.E.A.C.H.](./public/screenshots/screenshot-0402023.jpg)
-
-## Updates
-
-T.E.A.C.H. will be updated over time.
-
-Expect frequent improvements.
-
-**Next up:**
-
-- [ ] Sharing
-- [ ] "Bots"
-
-## Deploy
-
-**Vercel**
-
-Host your own live version of T.E.A.C.H. with Vercel.
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fmckaywrigley%2Fchatbot-ui)
-
-**Docker**
-
-Build locally:
-
-```shell
-docker build -t chatgpt-ui .
-docker run -e OPENAI_API_KEY=xxxxxxxx -p 3000:3000 chatgpt-ui
-```
-
-Pull from ghcr:
-
-```
-docker run -e OPENAI_API_KEY=xxxxxxxx -p 3000:3000 ghcr.io/mckaywrigley/chatbot-ui:main
-```
 
 ## Running Locally
+
+NOTE: requires NodeJS version 18 or above.
 
 **1. Clone Repo**
 
@@ -163,6 +75,5 @@ If you don't have an OpenAI API key, you can get one [here](https://platform.ope
 
 ## Contact
 
-If you have any questions, feel free to reach out to Mckay on [Twitter](https://twitter.com/mckaywrigley).
+If you have any questions, feel free to reach out to Iris Ma on [Iris Ma](mailto:huaiyaom@uci.edu).
 
-[GCSE]: https://developers.google.com/custom-search/v1/overview
