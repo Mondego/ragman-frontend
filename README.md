@@ -2,7 +2,7 @@
 
 ## About
 
-RAGMan frontend is a fork of [ChatBot-UI](https://github.com/mckaywrigley/chatbot-ui) maintained and further developed by the Mondego group at UC Irvine. Unlike the original chatbot-ui, RAGMan frontend requires a second web app, RAGMan-backend, to work. This is just the user-facing UI. All the fancy intelligent actions are done in the backend.
+RAGMan frontend is a fork of [ChatBot-UI](https://github.com/mckaywrigley/chatbot-ui) at around Nov 8, 2023, which is further developed by the Mondego group at UC Irvine. Our project is a true fork, in the sense that it does not follow ChatBot-UI any longer. Our UI aims to be feature poor and very simple. Unlike the original ChatBot-UI, RAGMan frontend requires a second web app, RAGMan-backend, to work. All the fancy intelligent actions are done in RAGMan-backend.
 
 ![RAGMan frontend](./public/screenshots/screenshot-0402023.jpg)
 
@@ -14,7 +14,7 @@ NOTE: requires NodeJS version 18 or above.
 **1. Clone Repo**
 
 ```bash
-git clone https://github.com/irisma00/ai_tutor_frontend.git
+git clone https://github.com/Mondego/ragman-frontend.git
 ```
 
 **2. Install Dependencies**
