@@ -17,7 +17,7 @@ const handler = async (req: Request): Promise<Response> => {
     //   url = `${OPENAI_API_HOST}/openai/deployments?api-version=${OPENAI_API_VERSION}`;
     // }
 
-    let url = "http://127.0.0.1:5000/chat"
+    let url = "http://127.0.0.1:5000/models"
 
     const response = await fetch(url, {
       headers: {
@@ -50,7 +50,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const json = await response.json();
 
-    console.log("----- data from model.ts -------")
+    console.log("----- data from model.ts -------\n" + JSON.stringify(json))
     
     const models: OpenAIModel[] = json.data
       .map((model: any) => {
