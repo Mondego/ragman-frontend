@@ -131,6 +131,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           toast.error(response.statusText);
           return;
         }
+
         const data = response.body;
         if (!data) {
           homeDispatch({ field: 'loading', value: false });
