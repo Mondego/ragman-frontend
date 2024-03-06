@@ -99,6 +99,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           key: apiKey,
           prompt: updatedConversation.prompt,
           temperature: updatedConversation.temperature,
+          cid: updatedConversation.id,
         };
         const endpoint = getEndpoint(plugin);
         let body;
@@ -130,6 +131,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           toast.error(response.statusText);
           return;
         }
+
         const data = response.body;
         if (!data) {
           homeDispatch({ field: 'loading', value: false });
