@@ -17,7 +17,7 @@ const handler = async (req: Request): Promise<Response> => {
     //   url = `${OPENAI_API_HOST}/openai/deployments?api-version=${OPENAI_API_VERSION}`;
     // }
 
-    let url = process.env.RAGMAN_BACKEND_HOST + ":5000/models"
+    let url = process.env.RAGMAN_BACKEND_HOST + "/models"
 
     const response = await fetch(url, {
       headers: {

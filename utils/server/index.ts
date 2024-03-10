@@ -36,7 +36,7 @@ export const OpenAIStream = async (
   //   url = `${OPENAI_API_HOST}/openai/deployments/${AZURE_DEPLOYMENT_ID}/chat/completions?api-version=${OPENAI_API_VERSION}`;
   // }
 
-  let url = process.env.RAGMAN_BACKEND_HOST + ":5000/chat"
+  let url = process.env.RAGMAN_BACKEND_HOST + "/chat"
   const res = await fetch(url, {
     headers: {
       'Content-Type': 'application/json',
