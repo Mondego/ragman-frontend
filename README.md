@@ -57,6 +57,8 @@ When deploying the application, the following environment variables can be set:
 
 | Environment Variable              | Default value                  | Description                                                                                                                               |
 | --------------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| RAGMAN_BACKEND_HOST               |                                | The url for the
+server
 | NEXT_PUBLIC_NAME                  |                                | The user-facing name of the app                                                                                   |
 | OPENAI_API_KEY                    |                                | The default API key used for authentication with OpenAI                                                                                   |
 | OPENAI_API_HOST                   | `https://api.openai.com`       | The base url, for Azure use `https://<endpoint>.openai.azure.com`                                                                         |
