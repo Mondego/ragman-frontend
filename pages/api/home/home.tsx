@@ -53,7 +53,7 @@ const Home = ({
   defaultModelId,
 }: Props) => {
   const { t } = useTranslation('chat');
-  const { getModels } = useApiService();
+  const { getModels, getAssistants } = useApiService();
   const { getModelsError } = useErrorService();
   const [initialRender, setInitialRender] = useState<boolean>(true);
 
@@ -76,7 +76,8 @@ const Home = ({
 
   const stopConversationRef = useRef<boolean>(false);
 
-  const { data, error, refetch } = useQuery(
+//  const { data, error, refetch } = useQuery(
+  const modelsResult = useQuery(
     ['GetModels', apiKey, serverSideApiKeyIsSet],
     ({ signal }) => {
       if (!apiKey && !serverSideApiKeyIsSet) return null;
@@ -91,13 +92,29 @@ const Home = ({
     { enabled: true, refetchOnMount: false },
   );
 
-  useEffect(() => {
-    if (data) dispatch({ field: 'models', value: data });
-  }, [data, dispatch]);
+  const assistantsResult = useQuery(
+    'GetAssistants',
+    () => {
+      return getAssistants();
+    },
+    { enabled: true, refetchOnMount: false },
+  );
 
   useEffect(() => {
-    dispatch({ field: 'modelError', value: getModelsError(error) });
-  }, [dispatch, error, getModelsError]);
+    if (modelsResult.data) dispatch({ field: 'models', value: modelsResult.data });
+//    console.log(modelsResult.data);
+  }, [modelsResult.data, dispatch]);
+
+  useEffect(() => {
+    dispatch({ field: 'modelError', value: getModelsError(modelsResult.error) });
+  }, [dispatch, modelsResult.error, getModelsError]);
+
+
+  useEffect(() => {
+    if (assistantsResult.data) dispatch({ field: 'assistants', value: assistantsResult.data });
+    console.log(assistantsResult.data);
+  }, [assistantsResult.data, dispatch]);
+
 
   // FETCH MODELS ----------------------------------------------
 

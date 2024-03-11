@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 
 import { useFetch } from '@/hooks/useFetch';
+import { RagmanAssistant } from '@/types/assistant';
 
 export interface GetModelsRequestProps {
   key: string;
@@ -38,9 +39,21 @@ const useApiService = () => {
     [fetchService],
   );
 
+  const getAssistants = useCallback(
+    () => {
+      return fetchService.get<RagmanAssistant[]>(`/api/assistants`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    },
+    [fetchService],
+  );
+
   return {
-    getModels,
+    getModels, getAssistants,
   };
+
 };
 
 export default useApiService;

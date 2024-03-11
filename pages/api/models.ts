@@ -45,7 +45,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const json = await response.json();
 
-    console.log("----- data from model.ts -------\n" + JSON.stringify(json))
+    console.log("----- models -------\n")
     
     const models: OpenAIModel[] = json.data
       .map((model: any) => {
