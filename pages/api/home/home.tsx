@@ -68,6 +68,7 @@ const Home = ({
       folders,
       conversations,
       selectedConversation,
+      assistants,
       prompts,
       temperature,
     },
@@ -113,6 +114,10 @@ const Home = ({
   useEffect(() => {
     if (assistantsResult.data) {
       dispatch({ field: 'assistants', value: assistantsResult.data });
+      if (selectedConversation && selectedConversation.assistant === undefined && assistantsResult.data.length == 1) {
+        selectedConversation.assistant = assistantsResult.data[0];
+      }
+
       console.log("-- " + JSON.stringify(assistantsResult ));
     }
   }, [assistantsResult.data, dispatch]);
@@ -210,7 +215,7 @@ const Home = ({
         maxLength: OpenAIModels[defaultModelId].maxLength,
         tokenLimit: OpenAIModels[defaultModelId].tokenLimit,
       },
-      assistant: undefined, 
+      assistant: assistants.length === 1 ? assistants[0] : undefined, 
       prompt: DEFAULT_SYSTEM_PROMPT,
       temperature: lastConversation?.temperature ?? DEFAULT_TEMPERATURE,
       folderId: null,
@@ -353,7 +358,7 @@ const Home = ({
           name: t('New Conversation'),
           messages: [],
           model: OpenAIModels[defaultModelId],
-          assistant: undefined,
+          assistant: assistants.length === 1? assistants[0] : undefined,
           prompt: DEFAULT_SYSTEM_PROMPT,
           temperature: lastConversation?.temperature ?? DEFAULT_TEMPERATURE,
           folderId: null,

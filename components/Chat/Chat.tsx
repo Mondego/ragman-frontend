@@ -102,6 +102,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           prompt: updatedConversation.prompt,
           temperature: updatedConversation.temperature,
           cid: updatedConversation.id,
+          aid: updatedConversation.assistant?.aid
         };
         const endpoint = getEndpoint(plugin);
         let body;
