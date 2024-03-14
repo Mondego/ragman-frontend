@@ -7,6 +7,11 @@ export interface GetModelsRequestProps {
   key: string;
 }
 
+export interface GetAssistantsResponseProps {
+  status: string;
+  data: Object;
+}
+
 const useApiService = () => {
   const fetchService = useFetch();
 
@@ -39,16 +44,18 @@ const useApiService = () => {
     [fetchService],
   );
 
-  const getAssistants = useCallback(
-    () => {
-      return fetchService.get<RagmanAssistant[]>(`/api/assistants`, {
+  const getAssistants = 
+    async () => {
+      var data = await fetchService.get<GetAssistantsResponseProps>(`/api/assistants`, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
-    },
-    [fetchService],
-  );
+      console.log("getAssistants");
+      console.log(data);
+      return data.data as RagmanAssistant[];
+    }
+  
 
   return {
     getModels, getAssistants,

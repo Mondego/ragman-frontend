@@ -111,8 +111,10 @@ const Home = ({
 
 
   useEffect(() => {
-    if (assistantsResult.data) dispatch({ field: 'assistants', value: assistantsResult.data });
-    console.log(assistantsResult.data);
+    if (assistantsResult.data) {
+      dispatch({ field: 'assistants', value: assistantsResult.data });
+      console.log("-- " + JSON.stringify(assistantsResult ));
+    }
   }, [assistantsResult.data, dispatch]);
 
 
@@ -123,7 +125,7 @@ const Home = ({
       field: 'selectedConversation',
       value: conversation,
     });
-
+//    console.log("handleSelectConversation " + conversation.assistant);
     saveConversation(conversation);
   };
 
@@ -208,11 +210,11 @@ const Home = ({
         maxLength: OpenAIModels[defaultModelId].maxLength,
         tokenLimit: OpenAIModels[defaultModelId].tokenLimit,
       },
+      assistant: undefined, 
       prompt: DEFAULT_SYSTEM_PROMPT,
       temperature: lastConversation?.temperature ?? DEFAULT_TEMPERATURE,
       folderId: null,
     };
-
     const updatedConversations = [...conversations, newConversation];
 
     dispatch({ field: 'selectedConversation', value: newConversation });
@@ -351,6 +353,7 @@ const Home = ({
           name: t('New Conversation'),
           messages: [],
           model: OpenAIModels[defaultModelId],
+          assistant: undefined,
           prompt: DEFAULT_SYSTEM_PROMPT,
           temperature: lastConversation?.temperature ?? DEFAULT_TEMPERATURE,
           folderId: null,

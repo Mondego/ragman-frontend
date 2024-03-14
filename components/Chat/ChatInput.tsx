@@ -98,6 +98,11 @@ export const ChatInput = ({
       return;
     }
 
+    if (selectedConversation?.assistant === undefined) {
+      alert(t('Please select an assistant for this conversation'));
+      return;
+    }
+
     const currentDate: Date = new Date();
     const timestamp = currentDate.toLocaleString('en-US', { timeZone: 'America/Los_Angeles',hour12: false});
 
