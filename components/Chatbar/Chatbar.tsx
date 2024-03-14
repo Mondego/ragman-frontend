@@ -34,7 +34,7 @@ export const Chatbar = () => {
   });
 
   const {
-    state: { conversations, showChatbar, defaultModelId, folders, pluginKeys },
+    state: { conversations, showChatbar, defaultModelId, folders, pluginKeys, assistants },
     dispatch: homeDispatch,
     handleCreateFolder,
     handleNewConversation,
@@ -120,6 +120,7 @@ export const Chatbar = () => {
           name: t('New Conversation'),
           messages: [],
           model: OpenAIModels[defaultModelId],
+          assistant: assistants.length === 1 ? assistants[0] : undefined,
           prompt: DEFAULT_SYSTEM_PROMPT,
           temperature: DEFAULT_TEMPERATURE,
           folderId: null,
@@ -162,6 +163,7 @@ export const Chatbar = () => {
             name: t('New Conversation'),
             messages: [],
             model: OpenAIModels[defaultModelId],
+            assistant: assistants.length === 1 ? assistants[0] : undefined,
             prompt: DEFAULT_SYSTEM_PROMPT,
             temperature: DEFAULT_TEMPERATURE,
             folderId: null,
