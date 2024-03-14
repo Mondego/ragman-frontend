@@ -30,6 +30,7 @@ export const OpenAIStream = async (
   key: string,
   messages: Message[],
   cid: string,
+  aid: string,
 ) => {
 
   let url = `${RAGMAN_BACKEND_HOST}/chat`;
@@ -59,6 +60,7 @@ export const OpenAIStream = async (
       max_tokens: 3000,
       temperature: temperature,
       cid: cid,
+      aid: aid,
       stream: true,
     }),
   });
