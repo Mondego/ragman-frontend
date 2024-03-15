@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 
 import { RagmanAssistant } from '@/types/assistant';
 
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from '@/pages/home/home.context';
 
 export const AssistantSelect = () => {
   const { t } = useTranslation('chat');
