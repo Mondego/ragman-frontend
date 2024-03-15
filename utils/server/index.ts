@@ -1,7 +1,7 @@
 import { Message } from '@/types/chat';
 import { OpenAIModel } from '@/types/openai';
 
-import { AZURE_DEPLOYMENT_ID, RAGMAN_BACKEND_HOST, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_ORGANIZATION } from '../app/const';
+import { RAGMAN_BACKEND_HOST } from '../app/const';
 
 import {
   ParsedEvent,
@@ -9,7 +9,7 @@ import {
   createParser,
 } from 'eventsource-parser';
 
-export class OpenAIError extends Error {
+export class RagmanBackendError extends Error {
   type: string;
   param: string;
   code: string;
@@ -24,10 +24,6 @@ export class OpenAIError extends Error {
 }
 
 export const RagmanBackendStream = async (
-  model: OpenAIModel,
-  systemPrompt: string,
-  temperature : number,
-  key: string,
   messages: Message[],
   cid: string,
   aid: string,
@@ -41,8 +37,6 @@ export const RagmanBackendStream = async (
     method: 'POST',
     body: JSON.stringify({
       messages: messages,
-      max_tokens: 3000,
-      temperature: temperature,
       cid: cid,
       aid: aid,
       stream: true,
@@ -55,7 +49,7 @@ export const RagmanBackendStream = async (
   if (res.status !== 200) {
     const result = await res.json();
     if (result.error) {
-      throw new OpenAIError(
+      throw new RagmanBackendError(
         result.error.message,
         result.error.type,
         result.error.param,
