@@ -23,7 +23,7 @@ export class OpenAIError extends Error {
   }
 }
 
-export const OpenAIStream = async (
+export const RagmanBackendStream = async (
   model: OpenAIModel,
   systemPrompt: string,
   temperature : number,
@@ -36,27 +36,11 @@ export const OpenAIStream = async (
   let url = `${RAGMAN_BACKEND_HOST}/chat`;
   const res = await fetch(url, {
     headers: {
-      'Content-Type': 'application/json',
-      ...(OPENAI_API_TYPE === 'openai' && {
-        Authorization: `Bearer ${key ? key : process.env.OPENAI_API_KEY}`
-      }),
-      ...(OPENAI_API_TYPE === 'azure' && {
-        'api-key': `${key ? key : process.env.OPENAI_API_KEY}`
-      }),
-      ...((OPENAI_API_TYPE === 'openai' && OPENAI_ORGANIZATION) && {
-        'OpenAI-Organization': OPENAI_ORGANIZATION,
-      }),
+      'Content-Type': 'application/json'
     },
     method: 'POST',
     body: JSON.stringify({
-      ...(OPENAI_API_TYPE === 'openai' && {model: model.id}),
-      messages: [
-        {
-          role: 'system',
-          content: systemPrompt,
-        },
-        ...messages,
-      ],
+      messages: messages,
       max_tokens: 3000,
       temperature: temperature,
       cid: cid,

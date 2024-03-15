@@ -1,5 +1,5 @@
 import { DEFAULT_SYSTEM_PROMPT, DEFAULT_TEMPERATURE } from '@/utils/app/const';
-import { OpenAIError, OpenAIStream } from '@/utils/server';
+import { OpenAIError, RagmanBackendStream } from '@/utils/server';
 
 import { ChatBody, Message } from '@/types/chat';
 
@@ -53,7 +53,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     encoding.free();
 
-    const stream = await OpenAIStream(model, promptToSend, temperatureToUse, key, messagesToSend, cid, aid);
+    const stream = await RagmanBackendStream(model, promptToSend, temperatureToUse, key, messagesToSend, cid, aid);
 
     return new Response(stream);
   } catch (error) {
