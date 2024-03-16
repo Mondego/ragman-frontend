@@ -171,16 +171,10 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
             
             if (isFirst) {
               isFirst = false;
-              let response_timestamp = message['timestamp'];
-              
-              if (!response_timestamp) {
-                const currentDate: Date = new Date();
-                response_timestamp = currentDate.toLocaleString('en-US', { timeZone: 'America/Los_Angeles',hour12: false});
-              } 
-              
+                         
               const updatedMessages: Message[] = [
                 ...updatedConversation.messages,
-                { role: 'assistant', content: chunkValue, timestamp: response_timestamp},
+                { role: 'assistant', content: chunkValue},
               ];
               updatedConversation = {
                 ...updatedConversation,
@@ -229,15 +223,9 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
         } else {
           const { answer } = await response.json();
           
-          let response_timestamp = await answer['timestamp'];         
-          if (!response_timestamp) {
-            const currentDate: Date = new Date();
-            response_timestamp = currentDate.toLocaleString('en-US', { timeZone: 'America/Los_Angeles',hour12: false});
-          } 
-
           const updatedMessages: Message[] = [
             ...updatedConversation.messages,
-            { role: 'assistant', content: answer, timestamp: response_timestamp },
+            { role: 'assistant', content: answer },
           ];
           updatedConversation = {
             ...updatedConversation,

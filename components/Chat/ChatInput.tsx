@@ -103,10 +103,7 @@ export const ChatInput = ({
       return;
     }
 
-    const currentDate: Date = new Date();
-    const timestamp = currentDate.toLocaleString('en-US', { timeZone: 'America/Los_Angeles',hour12: false});
-
-    onSend({ role: 'user', content, timestamp }, plugin);
+    onSend({ role: 'user', content }, plugin);
     setContent('');
     setPlugin(null);
 
