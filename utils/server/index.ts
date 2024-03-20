@@ -64,8 +64,6 @@ export const RagmanBackendStream = async (
     }
   }
 
-  
-
   const stream = new ReadableStream({
     async start(controller) {
       const onParse = (event: ParsedEvent | ReconnectInterval) => {
@@ -74,11 +72,11 @@ export const RagmanBackendStream = async (
 
           try {
             const json = JSON.parse(data);
-            if (json.choices[0].finish_reason != null) {
+            if (json.finish_reason != null) {
               controller.close();
               return;
             }
-            const text = json.choices[0].delta.content;
+            const text = json.content;
             const queue = encoder.encode(text);
             controller.enqueue(queue);
           } catch (e) {
@@ -87,29 +85,11 @@ export const RagmanBackendStream = async (
         }
       };
 
-      try {
-        for await (const chunk of res.body as any) {
-          console.log('------- inside stream ------')
-          console.log(decoder.decode(chunk));
-          
-          if (chunk) {
-            const json = JSON.parse(decoder.decode(chunk));
-            const text = json.content;
-            const queue = encoder.encode(text);
-            controller.enqueue(queue);
-          }
-        }
-      } catch (e) {
-        controller.error(e);
+      const parser = createParser(onParse);
+
+      for await (const chunk of res.body as any) {
+        parser.feed(decoder.decode(chunk));
       }
-      controller.close();
-      return;
-
-      // const parser = createParser(onParse);
-
-      // for await (const chunk of res.body as any) {
-        // parser.feed(decoder.decode(chunk));
-      // }
     },
   });
 
