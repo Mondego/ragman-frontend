@@ -35,9 +35,9 @@ scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/c
 scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/components/Chat/ChatInput.tsx irisma@clotho.ics.uci.edu:/home/irisma/ai_tutor_research/chatbot-ui/components/Chat/ChatInput.tsx
 ```
 
-- transfer `pages/api/home/home.tsx` to server
+- transfer `pages/home/home.tsx` to server
 ```sh
-scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/pages/api/home/home.tsx irisma@clotho.ics.uci.edu:/home/irisma/ai_tutor_research/chatbot-ui/pages/api/home/home.tsx
+scp /Users/iris/Documents/MONDEGO_Lab/AI_Tutoring/ai_tutor_research/chatbot-ui/pages/home/home.tsx irisma@clotho.ics.uci.edu:/home/irisma/ai_tutor_research/chatbot-ui/pages/home/home.tsx
 ```
 
 - transfer `pages/_document.tsx` to server

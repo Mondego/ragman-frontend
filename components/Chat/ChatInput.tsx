@@ -22,7 +22,7 @@ import { Message } from '@/types/chat';
 import { Plugin } from '@/types/plugin';
 import { Prompt } from '@/types/prompt';
 
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from '@/pages/home/home.context';
 
 import { PluginSelect } from './PluginSelect';
 import { PromptList } from './PromptList';
@@ -98,10 +98,12 @@ export const ChatInput = ({
       return;
     }
 
-    const currentDate: Date = new Date();
-    const timestamp = currentDate.toLocaleString('en-US', { timeZone: 'America/Los_Angeles',hour12: false});
+    if (selectedConversation?.assistant === undefined) {
+      alert(t('Please select an assistant for this conversation'));
+      return;
+    }
 
-    onSend({ role: 'user', content, timestamp }, plugin);
+    onSend({ role: 'user', content }, plugin);
     setContent('');
     setPlugin(null);
 

@@ -1,7 +1,7 @@
 import { Message } from '@/types/chat';
 import { OpenAIModel } from '@/types/openai';
 
-import { AZURE_DEPLOYMENT_ID, OPENAI_API_HOST, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_ORGANIZATION } from '../app/const';
+import { RAGMAN_BACKEND_HOST } from '../app/const';
 
 import {
   ParsedEvent,
@@ -9,7 +9,7 @@ import {
   createParser,
 } from 'eventsource-parser';
 
-export class OpenAIError extends Error {
+export class RagmanBackendError extends Error {
   type: string;
   param: string;
   code: string;
@@ -23,46 +23,22 @@ export class OpenAIError extends Error {
   }
 }
 
-export const OpenAIStream = async (
-  model: OpenAIModel,
-  systemPrompt: string,
-  temperature : number,
-  key: string,
+export const RagmanBackendStream = async (
   messages: Message[],
   cid: string,
+  aid: string,
 ) => {
-  // let url = `${OPENAI_API_HOST}/v1/chat/completions`;
-  // if (OPENAI_API_TYPE === 'azure') {
-  //   url = `${OPENAI_API_HOST}/openai/deployments/${AZURE_DEPLOYMENT_ID}/chat/completions?api-version=${OPENAI_API_VERSION}`;
-  // }
 
-  let url = "http://127.0.0.1:5000/chat"
+  let url = `${RAGMAN_BACKEND_HOST}/chat`;
   const res = await fetch(url, {
     headers: {
-      'Content-Type': 'application/json',
-      ...(OPENAI_API_TYPE === 'openai' && {
-        Authorization: `Bearer ${key ? key : process.env.OPENAI_API_KEY}`
-      }),
-      ...(OPENAI_API_TYPE === 'azure' && {
-        'api-key': `${key ? key : process.env.OPENAI_API_KEY}`
-      }),
-      ...((OPENAI_API_TYPE === 'openai' && OPENAI_ORGANIZATION) && {
-        'OpenAI-Organization': OPENAI_ORGANIZATION,
-      }),
+      'Content-Type': 'application/json'
     },
     method: 'POST',
     body: JSON.stringify({
-      ...(OPENAI_API_TYPE === 'openai' && {model: model.id}),
-      messages: [
-        {
-          role: 'system',
-          content: systemPrompt,
-        },
-        ...messages,
-      ],
-      max_tokens: 3000,
-      temperature: temperature,
+      messages: messages,
       cid: cid,
+      aid: aid,
       stream: true,
     }),
   });
@@ -73,7 +49,7 @@ export const OpenAIStream = async (
   if (res.status !== 200) {
     const result = await res.json();
     if (result.error) {
-      throw new OpenAIError(
+      throw new RagmanBackendError(
         result.error.message,
         result.error.type,
         result.error.param,
@@ -88,8 +64,6 @@ export const OpenAIStream = async (
     }
   }
 
-  
-
   const stream = new ReadableStream({
     async start(controller) {
       const onParse = (event: ParsedEvent | ReconnectInterval) => {
@@ -98,11 +72,11 @@ export const OpenAIStream = async (
 
           try {
             const json = JSON.parse(data);
-            if (json.choices[0].finish_reason != null) {
+            if (json.finish_reason != null) {
               controller.close();
               return;
             }
-            const text = json.choices[0].delta.content;
+            const text = json.content;
             const queue = encoder.encode(text);
             controller.enqueue(queue);
           } catch (e) {
@@ -111,29 +85,11 @@ export const OpenAIStream = async (
         }
       };
 
-      try {
-        for await (const chunk of res.body as any) {
-          console.log('------- inside stream ------')
-          console.log(decoder.decode(chunk));
-          
-          if (chunk) {
-            const json = JSON.parse(decoder.decode(chunk));
-            const text = json.content;
-            const queue = encoder.encode(text);
-            controller.enqueue(queue);
-          }
-        }
-      } catch (e) {
-        controller.error(e);
+      const parser = createParser(onParse);
+
+      for await (const chunk of res.body as any) {
+        parser.feed(decoder.decode(chunk));
       }
-      controller.close();
-      return;
-
-      // const parser = createParser(onParse);
-
-      // for await (const chunk of res.body as any) {
-        // parser.feed(decoder.decode(chunk));
-      // }
     },
   });
 

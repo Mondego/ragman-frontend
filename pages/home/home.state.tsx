@@ -1,3 +1,4 @@
+import { RagmanAssistant } from '@/types/assistant';
 import { Conversation, Message } from '@/types/chat';
 import { ErrorMessage } from '@/types/error';
 import { FolderInterface } from '@/types/folder';
@@ -13,6 +14,7 @@ export interface HomeInitialState {
   messageIsStreaming: boolean;
   modelError: ErrorMessage | null;
   models: OpenAIModel[];
+  assistants: RagmanAssistant[];
   folders: FolderInterface[];
   conversations: Conversation[];
   selectedConversation: Conversation | undefined;
@@ -37,6 +39,7 @@ export const initialState: HomeInitialState = {
   messageIsStreaming: false,
   modelError: null,
   models: [],
+  assistants: [],
   folders: [],
   conversations: [],
   selectedConversation: undefined,

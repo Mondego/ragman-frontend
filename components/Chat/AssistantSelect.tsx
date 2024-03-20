@@ -3,15 +3,15 @@ import { useContext } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { OpenAIModel } from '@/types/openai';
+import { RagmanAssistant } from '@/types/assistant';
 
 import HomeContext from '@/pages/home/home.context';
 
-export const ModelSelect = () => {
+export const AssistantSelect = () => {
   const { t } = useTranslation('chat');
 
   const {
-    state: { selectedConversation, models, defaultModelId },
+    state: { selectedConversation, assistants },
     handleUpdateConversation,
     dispatch: homeDispatch,
   } = useContext(HomeContext);
@@ -19,47 +19,43 @@ export const ModelSelect = () => {
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     selectedConversation &&
       handleUpdateConversation(selectedConversation, {
-        key: 'model',
-        value: models.find(
-          (model) => model.id === e.target.value,
-        ) as OpenAIModel,
+        key: 'assistant',
+        value: assistants.find(
+          (assistant) => assistant.aid === e.target.value,
+        ) as RagmanAssistant,
       });
   };
 
   return (
     <div className="flex flex-col">
       <label className="mb-2 text-left text-neutral-700 dark:text-neutral-400">
-        {t('Model')}
+        {t('Assistants')}
       </label>
       <div className="w-full rounded-lg border border-neutral-200 bg-transparent pr-2 text-neutral-900 dark:border-neutral-600 dark:text-white">
         <select
           className="w-full bg-transparent p-2"
-          placeholder={t('Select a model') || ''}
-          value={selectedConversation?.model?.id || defaultModelId}
+          placeholder={t('Select an assistant') || ''}
+//          value={selectedConversation?.assistant?.aid }
+          defaultValue={'DEFAULT'}
           onChange={handleChange}
         >
-          {models.map((model) => (
+          <option key="1" value="DEFAULT" className="dark:bg-[#343541] dark:text-white">
+                -Please select-
+          </option>
+
+          {assistants ? assistants.map((assistant) => (
             <option
-              key={model.id}
-              value={model.id}
+              key={assistant.aid}
+              value={assistant.aid}
               className="dark:bg-[#343541] dark:text-white"
             >
-              {model.id === defaultModelId
-                ? `Default (${model.name})`
-                : model.name}
+              {assistant.aid === selectedConversation?.assistant?.aid
+                ? `${assistant.name}`
+                : assistant.name}
             </option>
-          ))}
+          )) : "oops2"}
+  
         </select>
-      </div>
-      <div className="w-full mt-3 text-left text-neutral-700 dark:text-neutral-400 flex items-center">
-        <a
-          href="https://platform.openai.com/account/usage"
-          target="_blank"
-          className="flex items-center"
-        >
-          <IconExternalLink size={18} className={'inline mr-1'} />
-          {t('View Account Usage')}
-        </a>
       </div>
     </div>
   );

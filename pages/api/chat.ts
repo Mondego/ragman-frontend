@@ -1,5 +1,4 @@
-import { DEFAULT_SYSTEM_PROMPT, DEFAULT_TEMPERATURE } from '@/utils/app/const';
-import { OpenAIError, OpenAIStream } from '@/utils/server';
+import { RagmanBackendError, RagmanBackendStream } from '@/utils/server';
 
 import { ChatBody, Message } from '@/types/chat';
 
@@ -15,51 +14,14 @@ export const config = {
 
 const handler = async (req: Request): Promise<Response> => {
   try {
-    const { model, messages, key, prompt, temperature, cid } = (await req.json()) as ChatBody;
-    console.log("THIS IS MY CID:", cid);
+    const { model, messages, key, prompt, temperature, cid, aid } = (await req.json()) as ChatBody;
 
-    await init((imports) => WebAssembly.instantiate(wasm, imports));
-    const encoding = new Tiktoken(
-      tiktokenModel.bpe_ranks,
-      tiktokenModel.special_tokens,
-      tiktokenModel.pat_str,
-    );
-
-    let promptToSend = prompt;
-    if (!promptToSend) {
-      promptToSend = DEFAULT_SYSTEM_PROMPT;
-    }
-
-    let temperatureToUse = temperature;
-    if (temperatureToUse == null) {
-      temperatureToUse = DEFAULT_TEMPERATURE;
-    }
-
-    const prompt_tokens = encoding.encode(promptToSend);
-
-    let tokenCount = prompt_tokens.length;
-    let messagesToSend: Message[] = [];
-
-    for (let i = messages.length - 1; i >= 0; i--) {
-      const message = messages[i];
-      // console.log('current message in chat.ts is: ', message)
-      const tokens = encoding.encode(message.content);
-
-      if (tokenCount + tokens.length + 1000 > model.tokenLimit) {
-        break;
-      }
-      tokenCount += tokens.length;
-      messagesToSend = [message, ...messagesToSend];
-    }
-
-    encoding.free();
-
-    const stream = await OpenAIStream(model, promptToSend, temperatureToUse, key, messagesToSend, cid);
+    const stream = await RagmanBackendStream(messages, cid, aid);
 
     return new Response(stream);
   } catch (error) {
     console.error(error);
-    if (error instanceof OpenAIError) {
+    if (error instanceof RagmanBackendError) {
       return new Response('Error', { status: 500, statusText: error.message });
     } else {
       return new Response('Error', { status: 500 });

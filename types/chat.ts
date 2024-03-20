@@ -1,9 +1,9 @@
 import { OpenAIModel } from './openai';
+import { RagmanAssistant } from './assistant';
 
 export interface Message {
   role: Role;
   content: string;
-  timestamp: string;
 }
 
 export type Role = 'assistant' | 'user';
@@ -15,6 +15,7 @@ export interface ChatBody {
   prompt: string;
   temperature: number;
   cid: string,
+  aid: string,
 }
 
 export interface Conversation {
@@ -22,6 +23,7 @@ export interface Conversation {
   name: string;
   messages: Message[];
   model: OpenAIModel;
+  assistant: RagmanAssistant | undefined;
   prompt: string;
   temperature: number;
   folderId: string | null;

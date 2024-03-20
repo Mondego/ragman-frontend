@@ -1,4 +1,4 @@
-import { OPENAI_API_HOST, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_ORGANIZATION } from '@/utils/app/const';
+import { RAGMAN_BACKEND_HOST, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_ORGANIZATION } from '@/utils/app/const';
 
 import { OpenAIModel, OpenAIModelID, OpenAIModels } from '@/types/openai';
 
@@ -12,12 +12,7 @@ const handler = async (req: Request): Promise<Response> => {
       key: string;
     };
 
-    // let url = `${OPENAI_API_HOST}/v1/models`;
-    // if (OPENAI_API_TYPE === 'azure') {
-    //   url = `${OPENAI_API_HOST}/openai/deployments?api-version=${OPENAI_API_VERSION}`;
-    // }
-
-    let url = "http://127.0.0.1:5000/models"
+    let url = `${RAGMAN_BACKEND_HOST}/models`;
 
     const response = await fetch(url, {
       headers: {
@@ -50,7 +45,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const json = await response.json();
 
-    console.log("----- data from model.ts -------\n" + JSON.stringify(json))
+    console.log("----- models -------\n")
     
     const models: OpenAIModel[] = json.data
       .map((model: any) => {
