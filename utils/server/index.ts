@@ -1,5 +1,4 @@
 import { Message } from '@/types/chat';
-import { OpenAIModel } from '@/types/openai';
 
 import { RAGMAN_BACKEND_HOST } from '../app/const';
 
