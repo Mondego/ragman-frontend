@@ -8,9 +8,9 @@ export const config = {
 
 const handler = async (req: Request): Promise<Response> => {
   try {
-    const { messages, cid, aid } = (await req.json()) as ChatBody;
+    const { message, position, cid, aid } = (await req.json()) as ChatBody;
 
-    const stream = await RagmanBackendStream(messages, cid, aid);
+    const stream = await RagmanBackendStream(message, position, cid, aid);
 
     return new Response(stream);
   } catch (error) {

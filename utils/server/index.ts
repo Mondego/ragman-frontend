@@ -23,7 +23,8 @@ export class RagmanBackendError extends Error {
 }
 
 export const RagmanBackendStream = async (
-  messages: Message[],
+  message: Message,
+  position: number,
   cid: string,
   aid: string,
 ) => {
@@ -35,7 +36,8 @@ export const RagmanBackendStream = async (
     },
     method: 'POST',
     body: JSON.stringify({
-      messages: messages,
+      message: message,
+      position: position,
       cid: cid,
       aid: aid,
       stream: true,

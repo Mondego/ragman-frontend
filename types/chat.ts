@@ -8,7 +8,8 @@ export interface Message {
 export type Role = 'assistant' | 'user';
 
 export interface ChatBody {
-  messages: Message[];
+  message: Message;
+  position: number;
   key: string;
   cid: string,
   aid: string,

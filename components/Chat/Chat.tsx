@@ -88,8 +88,10 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
         });
         homeDispatch({ field: 'loading', value: true });
         homeDispatch({ field: 'messageIsStreaming', value: true });
+        console.log("Conversation length: " + updatedConversation.messages.length);
         const chatBody: ChatBody = {
-          messages: updatedConversation.messages,
+          message: message,
+          position: updatedConversation.messages.length - 1,
           key: apiKey,
           cid: updatedConversation.id,
           aid: updatedConversation.assistant?.aid ? updatedConversation.assistant?.aid : "-1"
