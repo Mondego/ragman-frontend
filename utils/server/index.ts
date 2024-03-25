@@ -15,7 +15,7 @@ export class RagmanBackendError extends Error {
 
   constructor(message: string, type: string, param: string, code: string) {
     super(message);
-    this.name = 'OpenAIError';
+    this.name = 'RagmanBackendError';
     this.type = type;
     this.param = param;
     this.code = code;
@@ -58,7 +58,7 @@ export const RagmanBackendStream = async (
       );
     } else {
       throw new Error(
-        `OpenAI API returned an error: ${
+        `Ragman Backend returned an error: ${
           decoder.decode(result?.value) || result.statusText
         }`,
       );
