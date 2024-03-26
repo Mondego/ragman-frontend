@@ -1,5 +1,4 @@
 import { Message } from '@/types/chat';
-import { OpenAIModel } from '@/types/openai';
 
 import { RAGMAN_BACKEND_HOST } from '../app/const';
 
@@ -16,7 +15,7 @@ export class RagmanBackendError extends Error {
 
   constructor(message: string, type: string, param: string, code: string) {
     super(message);
-    this.name = 'OpenAIError';
+    this.name = 'RagmanBackendError';
     this.type = type;
     this.param = param;
     this.code = code;
@@ -24,7 +23,8 @@ export class RagmanBackendError extends Error {
 }
 
 export const RagmanBackendStream = async (
-  messages: Message[],
+  message: Message,
+  position: number,
   cid: string,
   aid: string,
 ) => {
@@ -36,7 +36,8 @@ export const RagmanBackendStream = async (
     },
     method: 'POST',
     body: JSON.stringify({
-      messages: messages,
+      message: message,
+      position: position,
       cid: cid,
       aid: aid,
       stream: true,
@@ -57,7 +58,7 @@ export const RagmanBackendStream = async (
       );
     } else {
       throw new Error(
-        `OpenAI API returned an error: ${
+        `Ragman Backend returned an error: ${
           decoder.decode(result?.value) || result.statusText
         }`,
       );
