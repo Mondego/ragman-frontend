@@ -7,7 +7,6 @@ import HomeContext from '@/pages/home/home.context';
 
 import { SettingDialog } from '@/components/Settings/SettingDialog';
 
-import { Import } from '../../Settings/Import';
 import { Key } from '../../Settings/Key';
 import { SidebarButton } from '../../Sidebar/SidebarButton';
 import ChatbarContext from '../Chatbar.context';
@@ -28,7 +27,6 @@ export const ChatbarSettings = () => {
 
   const {
     handleClearConversations,
-    handleImportConversations,
     handleExportData,
   } = useContext(ChatbarContext);
 
@@ -37,8 +35,6 @@ export const ChatbarSettings = () => {
       {conversations.length > 0 ? (
         <ClearConversations onClearConversations={handleClearConversations} />
       ) : null}
-
-      <Import onImport={handleImportConversations} />
 
       <SidebarButton
         text={t('Export data')}
