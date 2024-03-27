@@ -60,6 +60,7 @@ When deploying the application, the following environment variables can be set:
 | RAGMAN_BACKEND_HOST               |   http://localhost:5000        | The url for the server                                             |
 | RAGMAN_API_KEY                    |   123                          | Eventually, we'll implement this...                                |
 | NEXT_PUBLIC_NAME                  |                                | The user-facing name of the app                                    |
+| NEXT_PUBLIC_MAX_LENGTH            |   1000                         | The maximum number of characters the user can send in a message                                |
 
 
 ## Contact
