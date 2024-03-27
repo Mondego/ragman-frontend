@@ -27,7 +27,6 @@ import HomeContext from '@/pages/home/home.context';
 
 import { PromptList } from './PromptList';
 import { VariableModal } from './VariableModal';
-import { time } from 'console'; 
 
 interface Props {
   onSend: (message: Message) => void;
@@ -72,7 +71,7 @@ export const ChatInput = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
-    const maxLength = NEXT_PUBLIC_MAX_LENGTH; // CVL !!!
+    const maxLength = NEXT_PUBLIC_MAX_LENGTH;
 
     if (maxLength && value.length > maxLength) {
       alert(
