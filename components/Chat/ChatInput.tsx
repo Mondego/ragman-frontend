@@ -18,6 +18,8 @@ import {
 
 import { useTranslation } from 'next-i18next';
 
+import { NEXT_PUBLIC_MAX_LENGTH } from '@/utils/app/const';
+
 import { Message } from '@/types/chat';
 import { Prompt } from '@/types/prompt';
 
@@ -70,7 +72,7 @@ export const ChatInput = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
-    const maxLength = 8000; // CVL !!!
+    const maxLength = NEXT_PUBLIC_MAX_LENGTH;
 
     if (maxLength && value.length > maxLength) {
       alert(
