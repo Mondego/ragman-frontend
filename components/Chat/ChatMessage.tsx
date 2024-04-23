@@ -5,6 +5,8 @@ import {
   IconRobot,
   IconTrash,
   IconUser,
+  IconThumbDown,
+  IconThumbUp,
 } from '@tabler/icons-react';
 import { FC, memo, useContext, useEffect, useRef, useState } from 'react';
 
@@ -110,6 +112,17 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
         setMessageCopied(false);
       }, 2000);
     });
+  };
+
+  const handleResponse = (rating: string) => {
+    if (rating == "negative") {
+      console.log("thumbs down");
+      return
+    }
+    if (rating == "positive") {
+      console.log("thumbs up");
+      return
+    }
   };
 
   useEffect(() => {
@@ -266,6 +279,12 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
                 }`}
               </MemoizedReactMarkdown>
 
+
+          {/* BUTTONS */}
+          {message.role === 'assistant' ? (
+            <div className="mt-2 space-x-2">
+
+              {/* CLIPBOARD */}
               <div className="md:-mr-8 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
                 {messagedCopied ? (
                   <IconCheck
@@ -281,6 +300,32 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
                   </button>
                 )}
               </div>
+
+
+              {/* THUMBS UP */}
+              <div className="md:-mr-8 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
+                <button
+                  className="invisible group-hover:visible focus:visible text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                  onClick={() => console.log(handleResponse('negative'))}
+                  >
+                  <IconThumbUp size={20} />
+                </button>
+              </div>
+
+
+              {/* THUMBS DOWN */}
+              <div className="md:-mr-8 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
+                <button
+                  className="invisible group-hover:visible focus:visible text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                  onClick={() => console.log(handleResponse('negative'))}
+                  >
+                  <IconThumbDown size={20} />
+                </button>
+                </div>
+            </div>
+          ) : (
+            <div></div>
+          )}
             </div>
           )}
         </div>
