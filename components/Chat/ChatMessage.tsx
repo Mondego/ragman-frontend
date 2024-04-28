@@ -17,7 +17,6 @@ import { useTranslation } from 'next-i18next';
 import { updateConversation } from '@/utils/app/conversation';
 
 import { Message } from '@/types/chat';
-import { FeedbackOption } from '@/types/feedback';
 
 import HomeContext from '@/pages/home/home.context';
 
@@ -136,12 +135,6 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
 
   const closeFeedbackForm = () => {
     setGettingFeedback(false);
-  }
-
-  const submitFeedback = (tag?: string, comments?: string) => {
-    setGettingFeedback(false);
-
-    console.log(tag, comments);
   }
 
   useEffect(() => {
@@ -343,7 +336,7 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
                   </button>
                 </div>
               </div>
-              {gettingFeedback && <FeedbackForm onClose={closeFeedbackForm} onSubmit={submitFeedback}/>}
+              {gettingFeedback && <FeedbackForm onClose={closeFeedbackForm}/>}
             </div>
           ) : (
             <div></div>

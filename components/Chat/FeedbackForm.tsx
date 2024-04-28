@@ -5,7 +5,6 @@ import { FeedbackOption } from '@/types/feedback';
 
 interface Props {
   onClose: () => void,
-  onSubmit: (tag?: string, comments?: string) => void
 }
 
 const feedbackOptions: FeedbackOption[] = [
@@ -18,40 +17,43 @@ const feedbackOptions: FeedbackOption[] = [
   {displayName: "Other", name: "other"}
 ];
 
-export const FeedbackForm: FC<Props> = ({ onClose, onSubmit }) => {
+export const FeedbackForm: FC<Props> = ({ onClose }) => {
   const [moreSelected, setMoreSelected] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [comment, setComment] = useState<string>("");
 
-  const getTagButtonClass = (name: string) => {
-    const selectedBasedOnPressed: string = name === selectedOption ? "border-gray-100 bg-gray-100 text-gray-900" : "border-gray-400 transition-colors duration-200 hover:bg-gray-600";
-  
-    return "border rounded-md px-3 py-0.5 " + selectedBasedOnPressed;
-  }
-
   const selectMore = () => {
     setMoreSelected(true);
-  }
-
-  const selectOption = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const selectedName = event.currentTarget.name;
-
-    if (moreSelected) {
-      setSelectedOption(selectedOption === selectedName ? "" : selectedName);
-    } else {
-      onSubmit(selectedName, undefined);
-    }
   }
 
   const updateComment = (event: React.ChangeEvent<HTMLInputElement>) => {
     setComment(event.target.value);
   }
 
-  const submit = () => {
+  const submitFeedback = (tag: string, userComment: string) => {
+    const finaltag: string | undefined = tag ? tag : undefined;
+    const finalComment: string | undefined = userComment ? userComment : undefined;
+
+    console.log(finaltag, finalComment);
+
+    onClose();
+  }
+
+  const selectOption = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const selectedName: string = event.currentTarget.name;
+
+    setSelectedOption(selectedOption === selectedName ? "" : selectedName);
+    
+    if (!moreSelected) {
+      submitFeedback(selectedName, comment);
+    }
+  }
+
+  const submitButton = () => {
     if (selectedOption.length > 0 || comment.length > 0) {
-      onSubmit(selectedOption ? selectedOption : undefined, comment ? comment : undefined);
+      submitFeedback(selectedOption, comment);
     } else {
-      alert("Please select a reason for this bad response or enter a comment");
+      alert("Please select a reason or enter a comment for this bad response");
     }    
   }
 
@@ -71,7 +73,11 @@ export const FeedbackForm: FC<Props> = ({ onClose, onSubmit }) => {
             <button 
               key={index}
               name={option.name}
-              className={getTagButtonClass(option.name)}
+              className={`${
+                option.name === selectedOption 
+                  ? "border-gray-100 bg-gray-100 text-gray-900"
+                  : "border-gray-400 transition-colors duration-200 hover:bg-gray-600"
+                } border rounded-md px-3 py-0.5`}
               onClick={option.name === "more" ? selectMore : selectOption}
             >
               {option.displayName}
@@ -88,8 +94,8 @@ export const FeedbackForm: FC<Props> = ({ onClose, onSubmit }) => {
         >
         </input>
         <button
-          className="rounded-md border border-gray-400 px-4 py-2 text-gray-200 duration-200 hover:bg-gray-600"
-          onClick={submit}
+          className="rounded-md border border-gray-400 px-4 py-2 text-gray-200 duration-200 hover:bg-gray-600 min-w-max"
+          onClick={submitButton}
         >
           Submit
         </button>
