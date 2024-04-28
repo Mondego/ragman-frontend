@@ -6,7 +6,9 @@ import {
   IconTrash,
   IconUser,
   IconThumbDown,
+  IconThumbDownFilled,
   IconThumbUp,
+  IconThumbUpFilled
 } from '@tabler/icons-react';
 import { FC, memo, useContext, useEffect, useRef, useState } from 'react';
 
@@ -15,6 +17,7 @@ import { useTranslation } from 'next-i18next';
 import { updateConversation } from '@/utils/app/conversation';
 
 import { Message } from '@/types/chat';
+import { FeedbackOption } from '@/types/feedback';
 
 import HomeContext from '@/pages/home/home.context';
 
@@ -24,6 +27,7 @@ import { MemoizedReactMarkdown } from '../Markdown/MemoizedReactMarkdown';
 import rehypeMathjax from 'rehype-mathjax';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
+import { FeedbackForm } from './FeedbackForm';
 
 export interface Props {
   message: Message;
@@ -43,6 +47,8 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [messageContent, setMessageContent] = useState(message.content);
   const [messagedCopied, setMessageCopied] = useState(false);
+  const [gettingFeedback, setGettingFeedback] = useState<boolean>(false);
+  const [rating, setRating] = useState<string | undefined>(undefined);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -114,16 +120,29 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
     });
   };
 
-  const handleResponse = (rating: string) => {
-    if (rating == "negative") {
-      console.log("thumbs down");
-      return
-    }
-    if (rating == "positive") {
-      console.log("thumbs up");
-      return
+  const handleResponse = (userRating: string) => {
+    if (!rating) {
+      setRating(userRating);
+
+      if (userRating == "negative") {
+        console.log("thumbs down");
+
+        setGettingFeedback(true);
+      } else if (userRating == "positive") {
+        console.log("thumbs up");
+      }
     }
   };
+
+  const closeFeedbackForm = () => {
+    setGettingFeedback(false);
+  }
+
+  const submitFeedback = (tag?: string, comments?: string) => {
+    setGettingFeedback(false);
+
+    console.log(tag, comments);
+  }
 
   useEffect(() => {
     setMessageContent(message.content);
@@ -282,46 +301,49 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
 
           {/* BUTTONS */}
           {message.role === 'assistant' ? (
-            <div className="mt-2 space-x-2 flex flex-row">
+            <div className="flex flex-col gap-4">
+              <div className="mt-2 space-x-2 flex flex-row">
 
-              {/* CLIPBOARD */}
-              <div className="md:-mr-0 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
-                {messagedCopied ? (
-                  <IconCheck
-                    size={20}
-                    className="text-green-500 dark:text-green-400"
-                  />
-                ) : (
-                  <button
-                    className="invisible group-hover:visible focus:visible text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-                    onClick={copyOnClick}
-                  >
-                    <IconCopy size={20} />
-                  </button>
-                )}
-              </div>
-
-
-              {/* THUMBS UP */}
-              <div className="md:-mr-0 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
-                <button
-                  className="invisible group-hover:visible focus:visible text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-                  onClick={() => console.log(handleResponse('negative'))}
-                  >
-                  <IconThumbUp size={20} />
-                </button>
-              </div>
-
-
-              {/* THUMBS DOWN */}
-              <div className="md:-mr-0 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
-                <button
-                  className="invisible group-hover:visible focus:visible text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-                  onClick={() => console.log(handleResponse('negative'))}
-                  >
-                  <IconThumbDown size={20} />
-                </button>
+                {/* CLIPBOARD */}
+                <div className="invisible group-hover:visible focus:visible md:-mr-0 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
+                  {messagedCopied ? (
+                    <IconCheck
+                      size={20}
+                      className="text-green-500 dark:text-green-400"
+                    />
+                  ) : (
+                    <button
+                      className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                      onClick={copyOnClick}
+                    >
+                      <IconCopy size={20} />
+                    </button>
+                  )}
                 </div>
+
+
+                {/* THUMBS UP */}
+                <div className="invisible group-hover:visible focus:visible md:-mr-0 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
+                  <button
+                    className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                    onClick={() => console.log(handleResponse('positive'))}
+                  >
+                    {rating === "positive" ? <IconThumbUpFilled size={20} /> : <IconThumbUp size={20} />}
+                  </button>
+                </div>
+
+
+                {/* THUMBS DOWN */}
+                <div className="invisible group-hover:visible focus:visible md:-mr-0 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
+                  <button
+                    className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                    onClick={() => console.log(handleResponse('negative'))}
+                  >
+                    {rating === "negative" ? <IconThumbDownFilled size={20} /> : <IconThumbDown size={20} />}
+                  </button>
+                </div>
+              </div>
+              {gettingFeedback && <FeedbackForm onClose={closeFeedbackForm} onSubmit={submitFeedback}/>}
             </div>
           ) : (
             <div></div>
