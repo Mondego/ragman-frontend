@@ -88,7 +88,7 @@ export const FeedbackForm: FC<Props> = ({ onClose }) => {
       {moreSelected && <div className="md:mt-4 flex flex-row gap-4">
         <input
           className="rounded-md border border-gray-400 px-4 py-2 placeholder-gray-400 text-gray-200 bg-transparent flex-grow"
-          placeholder="(Optional) Tell us more..."
+          placeholder="(Optional) Add a comment..."
           onChange={updateComment}
           value={comment}
         >
