@@ -1,6 +1,10 @@
 import { IconX } from '@tabler/icons-react';
 import { FC, useState } from "react";
 
+import { useTranslation } from 'next-i18next';
+
+import { NEXT_PUBLIC_COMMENT_MAX_LENGTH } from '@/utils/app/const';
+
 import { FeedbackOption } from '@/types/feedback';
 
 interface Props {
@@ -18,6 +22,8 @@ const feedbackOptions: FeedbackOption[] = [
 ];
 
 export const FeedbackForm: FC<Props> = ({ onClose }) => {
+  const { t } = useTranslation('chat');
+  
   const [moreSelected, setMoreSelected] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [comment, setComment] = useState<string>("");
@@ -26,8 +32,20 @@ export const FeedbackForm: FC<Props> = ({ onClose }) => {
     setMoreSelected(true);
   }
 
-  const updateComment = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setComment(event.target.value);
+  const updateComment = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const maxLength = NEXT_PUBLIC_COMMENT_MAX_LENGTH;
+
+    if (maxLength && value.length > maxLength) {
+      alert(
+        t(
+          `Comment limit is {{maxLength}} characters. You have entered {{valueLength}} characters.`,
+          { maxLength, valueLength: value.length },
+        ),
+      )
+    } else {
+      setComment(value);
+    }
   }
 
   const submitFeedback = (tag: string, userComment: string) => {
@@ -39,8 +57,8 @@ export const FeedbackForm: FC<Props> = ({ onClose }) => {
     onClose();
   }
 
-  const selectOption = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const selectedName: string = event.currentTarget.name;
+  const selectOption = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const selectedName: string = e.currentTarget.name;
 
     setSelectedOption(selectedOption === selectedName ? "" : selectedName);
     
