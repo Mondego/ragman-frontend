@@ -61,7 +61,7 @@ When deploying the application, the following environment variables can be set:
 | RAGMAN_API_KEY                    |   123                          | Eventually, we'll implement this...                                |
 | NEXT_PUBLIC_NAME                  |                                | The user-facing name of the app                                    |
 | NEXT_PUBLIC_MAX_LENGTH            |   1000                         | The maximum number of characters the user can send in a message                                |
-| COMMENT_MAX_LENGTH            |   1000                         | The maximum number of characters the user can enter in a comment                                |
+| NEXT_PUBLIC_COMMENT_MAX_LENGTH            |   1000                         | The maximum number of characters the user can enter in a comment                                |
 
 
 ## Contact
