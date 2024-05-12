@@ -23,6 +23,7 @@ const feedbackOptions: FeedbackOption[] = [
 
 export const FeedbackForm: FC<Props> = ({ onClose }) => {
   const { t } = useTranslation('chat');
+  const maxLength = NEXT_PUBLIC_COMMENT_MAX_LENGTH;
   
   const [moreSelected, setMoreSelected] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<string>("");
@@ -34,7 +35,6 @@ export const FeedbackForm: FC<Props> = ({ onClose }) => {
 
   const updateComment = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    const maxLength = NEXT_PUBLIC_COMMENT_MAX_LENGTH;
 
     if (maxLength && value.length > maxLength) {
       alert(
@@ -43,9 +43,9 @@ export const FeedbackForm: FC<Props> = ({ onClose }) => {
           { maxLength, valueLength: value.length },
         ),
       )
-    } else {
-      setComment(value);
     }
+
+    setComment(value);
   }
 
   const submitFeedback = (tag: string, userComment: string) => {
@@ -68,8 +68,15 @@ export const FeedbackForm: FC<Props> = ({ onClose }) => {
   }
 
   const submitButton = () => {
-    if (selectedOption.length > 0 || comment.length > 0) {
+    if (comment.length <= maxLength && (0 < selectedOption.length || 0 < comment.length)) {
       submitFeedback(selectedOption, comment);
+    } else if (comment.length > maxLength) {
+      alert(
+        t(
+          `Please shorten your comment. Comment limit is {{maxLength}} characters. You have entered {{valueLength}} characters.`,
+          { maxLength, valueLength: comment.length },
+        ),
+      );
     } else {
       alert("Please select a reason or enter a comment for this bad response");
     }    
