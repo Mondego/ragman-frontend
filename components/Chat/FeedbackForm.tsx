@@ -1,6 +1,10 @@
 import { IconX } from '@tabler/icons-react';
 import { FC, useState } from "react";
 
+import { useTranslation } from 'next-i18next';
+
+import { NEXT_PUBLIC_COMMENT_MAX_LENGTH } from '@/utils/app/const';
+
 import { FeedbackOption } from '@/types/feedback';
 
 interface Props {
@@ -18,6 +22,9 @@ const feedbackOptions: FeedbackOption[] = [
 ];
 
 export const FeedbackForm: FC<Props> = ({ onClose }) => {
+  const { t } = useTranslation('chat');
+  const maxLength = NEXT_PUBLIC_COMMENT_MAX_LENGTH;
+  
   const [moreSelected, setMoreSelected] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [comment, setComment] = useState<string>("");
@@ -26,8 +33,19 @@ export const FeedbackForm: FC<Props> = ({ onClose }) => {
     setMoreSelected(true);
   }
 
-  const updateComment = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setComment(event.target.value);
+  const updateComment = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    if (maxLength && value.length > maxLength) {
+      alert(
+        t(
+          `Comment limit is {{maxLength}} characters. You have entered {{valueLength}} characters.`,
+          { maxLength, valueLength: value.length },
+        ),
+      )
+    }
+
+    setComment(value);
   }
 
   const submitFeedback = (tag: string, userComment: string) => {
@@ -39,8 +57,8 @@ export const FeedbackForm: FC<Props> = ({ onClose }) => {
     onClose();
   }
 
-  const selectOption = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const selectedName: string = event.currentTarget.name;
+  const selectOption = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const selectedName: string = e.currentTarget.name;
 
     setSelectedOption(selectedOption === selectedName ? "" : selectedName);
     
@@ -50,8 +68,15 @@ export const FeedbackForm: FC<Props> = ({ onClose }) => {
   }
 
   const submitButton = () => {
-    if (selectedOption.length > 0 || comment.length > 0) {
+    if (comment.length <= maxLength && (0 < selectedOption.length || 0 < comment.length)) {
       submitFeedback(selectedOption, comment);
+    } else if (comment.length > maxLength) {
+      alert(
+        t(
+          `Please shorten your comment. Comment limit is {{maxLength}} characters. You have entered {{valueLength}} characters.`,
+          { maxLength, valueLength: comment.length },
+        ),
+      );
     } else {
       alert("Please select a reason or enter a comment for this bad response");
     }    
@@ -88,7 +113,7 @@ export const FeedbackForm: FC<Props> = ({ onClose }) => {
       {moreSelected && <div className="md:mt-4 flex flex-row gap-4">
         <input
           className="rounded-md border border-gray-400 px-4 py-2 placeholder-gray-400 text-gray-200 bg-transparent flex-grow"
-          placeholder="(Optional) Tell us more..."
+          placeholder="(Optional) Add a comment..."
           onChange={updateComment}
           value={comment}
         >
