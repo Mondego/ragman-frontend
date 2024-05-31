@@ -11,7 +11,6 @@ import {
   IconThumbUpFilled,
 } from "@tabler/icons-react";
 import { FC, memo, useContext, useEffect, useRef, useState } from "react";
-import axios from "axios";
 import { useTranslation } from "next-i18next";
 
 import { updateConversation } from "@/utils/app/conversation";
@@ -127,32 +126,36 @@ export const ChatMessage: FC<Props> = memo(
       });
     };
 
-    const handleThumbsUp = () => {
-      if (rating) return;
-      console.log("Thumbs up clicked");
-      setRating("positive");
-      sendFeedback("thumbsUp");
-    };
+    const handleResponse = (userRating: string) => {
+      if (!rating) {
+        setRating(userRating);
 
-    const handleThumbsDown = () => {
-      if (rating) return;
-      console.log("Thumbs down clicked");
-      setRating("negative");
-      sendFeedback("thumbsDown");
-    };
+        if (userRating === "negative") {
+          console.log("thumbs down");
+          setGettingFeedback(true);
+        } else if (userRating === "positive") {
+          console.log("thumbs up");
+        }
 
-    const sendFeedback = (feedbackType: string) => {
-      axios
-        .post("/api/feedback", {
-          messageId: message.id,
-          feedback: feedbackType,
+        // Add the API call here
+        fetch('http://127.0.0.1:5000/api/feedback', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            messageId: message.id,
+            feedback: userRating,
+          }),
         })
-        .then((response) => {
-          console.log("Feedback sent:", response.data);
+        .then(response => response.json())
+        .then(data => {
+          console.log('Success:', data);
         })
         .catch((error) => {
-          console.error("Error sending feedback:", error);
+          console.error('Error:', error);
         });
+      }
     };
 
     const closeFeedbackForm = () => {
@@ -344,7 +347,7 @@ export const ChatMessage: FC<Props> = memo(
                       <div className="invisible group-hover:visible focus:visible md:-mr-0 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
                         <button
                           className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-                          onClick={handleThumbsUp}
+                          onClick={() => handleResponse("positive")}
                           disabled={!!rating}
                         >
                           {rating === "positive" ? (
@@ -359,7 +362,7 @@ export const ChatMessage: FC<Props> = memo(
                       <div className="invisible group-hover:visible focus:visible md:-mr-0 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
                         <button
                           className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-                          onClick={handleThumbsDown}
+                          onClick={() => handleResponse("negative")}
                           disabled={!!rating}
                         >
                           {rating === "negative" ? (
