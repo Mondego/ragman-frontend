@@ -1,6 +1,7 @@
 import { IconClearAll, IconSettings } from '@tabler/icons-react';
 import {
   MutableRefObject,
+  RefObject,
   memo,
   useCallback,
   useContext,
@@ -262,6 +263,12 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
   };
   const throttledScrollDown = throttle(scrollDown, 250);
 
+  const handleScrollToMessage = (msgRef: RefObject<HTMLDivElement>) => {
+    if (msgRef.current) {
+      msgRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   // useEffect(() => {
   //   console.log('currentMessage', currentMessage);
   //   if (currentMessage) {
@@ -369,6 +376,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                         selectedConversation?.messages.length - index,
                       );
                     }}
+                    onOpenFeedbackForm={handleScrollToMessage}
                   />
                 ))}
 

@@ -10,7 +10,7 @@ import {
   IconThumbUp,
   IconThumbUpFilled
 } from '@tabler/icons-react';
-import { FC, memo, useContext, useEffect, useRef, useState } from 'react';
+import { FC, RefObject, memo, useContext, useEffect, useRef, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -31,10 +31,11 @@ import { FeedbackForm } from './FeedbackForm';
 export interface Props {
   message: Message;
   messageIndex: number;
-  onEdit?: (editedMessage: Message) => void
+  onEdit?: (editedMessage: Message) => void;
+  onOpenFeedbackForm: (msgRef: RefObject<HTMLDivElement>) => void;
 }
 
-export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) => {
+export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit, onOpenFeedbackForm }) => {
   const { t } = useTranslation('chat');
 
   const {
@@ -50,6 +51,7 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
   const [rating, setRating] = useState<string | undefined>(undefined);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const selfRef = useRef<HTMLDivElement>(null);
 
   const toggleEditing = () => {
     setIsEditing(!isEditing);
@@ -133,14 +135,17 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
     }
   };
 
-  const closeFeedbackForm = () => {
+  const handleCloseFeedbackForm = () => {
     setGettingFeedback(false);
+  }
+  
+  const handleScrollToFeedbackForm = () => {
+    onOpenFeedbackForm(selfRef);
   }
 
   useEffect(() => {
     setMessageContent(message.content);
   }, [message.content]);
-
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -148,6 +153,8 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   }, [isEditing]);
+
+  useEffect(handleScrollToFeedbackForm, [gettingFeedback]);
 
   return (
     <div
@@ -157,6 +164,7 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
           : 'border-b border-black/10 bg-white text-gray-800 dark:border-gray-900/50 dark:bg-[#343541] dark:text-gray-100'
       }`}
       style={{ overflowWrap: 'anywhere' }}
+      ref={selfRef}
     >
       <div className="relative m-auto flex p-4 text-base md:max-w-2xl md:gap-6 md:py-6 lg:max-w-2xl lg:px-0 xl:max-w-3xl">
         <div className="min-w-[40px] text-right font-bold">
@@ -336,7 +344,7 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
                   </button>
                 </div>
               </div>
-              {gettingFeedback && <FeedbackForm onClose={closeFeedbackForm}/>}
+              {gettingFeedback && <FeedbackForm onClose={handleCloseFeedbackForm} onOpenFeedbackForm={handleScrollToFeedbackForm}/>}
             </div>
           ) : (
             <div></div>
