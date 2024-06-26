@@ -87,12 +87,17 @@ export const FeedbackForm: FC<Props> = ({ onClose, onOpenFeedbackForm }) => {
   }
 
   useEffect(() => {
-    if (commentField.current) {
-      commentField.current.focus();
-    }
-  }, [moreSelected]);
+      if (moreSelected && commentField.current) {
+        commentField.current.focus();
+      }
 
-  useEffect(onOpenFeedbackForm, [moreSelected])
+      onOpenFeedbackForm();
+    },
+    [
+      moreSelected,
+      onOpenFeedbackForm,
+    ]
+  );
 
   return (
     <div className="w-full rounded-md border border-gray-400 flex flex-col px-4 py-4 gap-2 text-gray-400 text-[14px]">

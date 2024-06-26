@@ -103,7 +103,7 @@ export const ChatInput = ({
       return;
     }
 
-    onSend({ role: 'user', content });
+    onSend({ role: 'user', content: content, rating: 'none' });
     setContent('');
     setPlugin(null);
 

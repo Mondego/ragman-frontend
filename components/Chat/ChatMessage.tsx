@@ -10,13 +10,13 @@ import {
   IconThumbUp,
   IconThumbUpFilled
 } from '@tabler/icons-react';
-import { FC, RefObject, memo, useContext, useEffect, useRef, useState } from 'react';
+import { FC, RefObject, memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
 import { updateConversation } from '@/utils/app/conversation';
 
-import { Message } from '@/types/chat';
+import { Message, Rating } from '@/types/chat';
 
 import HomeContext from '@/pages/home/home.context';
 
@@ -32,10 +32,11 @@ export interface Props {
   message: Message;
   messageIndex: number;
   onEdit?: (editedMessage: Message) => void;
-  onOpenFeedbackForm: (msgRef: RefObject<HTMLDivElement>) => void;
+  onRate?: (ratedMessage: Message, index: number) => void;
+  onOpenFeedbackForm?: (msgRef: RefObject<HTMLDivElement>) => void;
 }
 
-export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit, onOpenFeedbackForm }) => {
+export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit, onRate, onOpenFeedbackForm }) => {
   const { t } = useTranslation('chat');
 
   const {
@@ -48,7 +49,9 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit, onO
   const [messageContent, setMessageContent] = useState(message.content);
   const [messagedCopied, setMessageCopied] = useState(false);
   const [gettingFeedback, setGettingFeedback] = useState<boolean>(false);
-  const [rating, setRating] = useState<string | undefined>(undefined);
+  const [rating, setRating] = useState<Rating>(message.rating);
+
+  const messageRef = useRef<Message>(message);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const selfRef = useRef<HTMLDivElement>(null);
@@ -121,31 +124,56 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit, onO
     });
   };
 
-  const handleResponse = (userRating: string) => {
-    if (!rating) {
-      setRating(userRating);
+  const handleResponse = (userRating: Rating) => {
+      if (rating === 'none' && selectedConversation && onRate) {
+        console.log(selectedConversation);
+        setRating(userRating);
 
-      if (userRating == "negative") {
-        console.log("thumbs down");
+        onRate({...message, rating: userRating}, messageIndex);
 
-        setGettingFeedback(true);
-      } else if (userRating == "positive") {
-        console.log("thumbs up");
+        if (userRating == "negative") {
+          console.log("thumbs down");
+
+          setGettingFeedback(true);
+        } else if (userRating == "positive") {
+          console.log("thumbs up");
+        }
       }
     }
-  };
 
   const handleCloseFeedbackForm = () => {
     setGettingFeedback(false);
   }
   
   const handleScrollToFeedbackForm = () => {
-    onOpenFeedbackForm(selfRef);
+    if (gettingFeedback && selectedConversation && onOpenFeedbackForm) {
+      onOpenFeedbackForm(selfRef);
+    }
   }
 
   useEffect(() => {
-    setMessageContent(message.content);
-  }, [message.content]);
+      setMessageContent(message.content);
+    }, 
+    [
+      message.content,
+    ]
+  )
+
+  useEffect(() => {
+    setRating(message.rating);
+  }, 
+  [
+    message.rating,
+  ]
+)
+
+  useEffect(() => {
+      if (selectedConversation?.id) {
+        setGettingFeedback(false);
+        setMessageCopied(false)
+      }
+    }, [selectedConversation?.id]
+  );
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -154,7 +182,13 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit, onO
     }
   }, [isEditing]);
 
-  useEffect(handleScrollToFeedbackForm, [gettingFeedback]);
+  useEffect(handleScrollToFeedbackForm,
+    [
+      gettingFeedback,
+      selectedConversation,
+      onOpenFeedbackForm,
+    ]
+  );
 
   return (
     <div
