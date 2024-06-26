@@ -33,6 +33,8 @@ import { AssistantSelect } from './AssistantSelect';
 import { MemoizedChatMessage } from './MemoizedChatMessage';
 import home from '@/pages/home';
 
+import { v4 as uuidv4 } from 'uuid';
+
 interface Props {
   stopConversationRef: MutableRefObject<boolean>;
 }
@@ -157,7 +159,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                         
             const updatedMessages: Message[] = [
               ...updatedConversation.messages,
-              { role: 'assistant', content: chunkValue, rating: 'none'},
+              { id: uuidv4(), role: 'assistant', content: chunkValue, rating: 'none'},
             ];
             updatedConversation = {
               ...updatedConversation,

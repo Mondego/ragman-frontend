@@ -1,4 +1,6 @@
 import { IconX } from '@tabler/icons-react';
+
+import axios from 'axios';
 import { FC, useEffect, useRef, useState } from "react";
 
 import { useTranslation } from 'next-i18next';
@@ -9,6 +11,7 @@ import { FeedbackOption } from '@/types/feedback';
 
 interface Props {
   onClose: () => void;
+  messageId: string;
   onOpenFeedbackForm: () => void;
 }
 
@@ -23,19 +26,19 @@ const feedbackOptions: FeedbackOption[] = [
   {displayName: "Other", name: "other"}
 ];
 
-export const FeedbackForm: FC<Props> = ({ onClose, onOpenFeedbackForm }) => {
+export const FeedbackForm: FC<Props> = ({ onClose, messageId, onOpenFeedbackForm }) => {
   const { t } = useTranslation('chat');
   const maxLength = NEXT_PUBLIC_COMMENT_MAX_LENGTH;
-  
+
   const [moreSelected, setMoreSelected] = useState<boolean>(false);
-  const [selectedOption, setSelectedOption] = useState<string>("");
-  const [comment, setComment] = useState<string>("");
+  const [selectedOption, setSelectedOption] = useState<string>('');
+  const [comment, setComment] = useState<string>('');
 
   const commentField = useRef<HTMLInputElement>(null);
 
   const handleSelectMore = () => {
     setMoreSelected(true);
-  }
+  };
 
   const handleUpdateComment = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -46,30 +49,42 @@ export const FeedbackForm: FC<Props> = ({ onClose, onOpenFeedbackForm }) => {
           `Comment limit is {{maxLength}} characters. You have entered {{valueLength}} characters.`,
           { maxLength, valueLength: value.length },
         ),
-      )
+      );
+    } else {
+      setComment(value);
     }
-
-    setComment(value);
-  }
+  };
 
   const handleSubmit = (tag: string, userComment: string) => {
-    const finaltag: string | undefined = tag ? tag : undefined;
+    const finalTag: string | undefined = tag ? tag : undefined;
     const finalComment: string | undefined = userComment ? userComment : undefined;
 
-    console.log(finaltag, finalComment);
+    console.log(finalTag, finalComment);
 
+    axios.post('http://127.0.0.1:5000/api/feedback-detail', {
+      messageId: messageId,
+      feedback: finalTag,
+      comment: finalComment,
+    })
+    .then(response => {
+      console.log('Detailed feedback sent:', response.data);
+    })
+    .catch(error => {
+      console.error('Error sending detailed feedback:', error);
+    });
+    
     onClose();
-  }
+  };
 
   const handleSelectOption = (e: React.MouseEvent<HTMLButtonElement>) => {
     const selectedName: string = e.currentTarget.name;
 
-    setSelectedOption(selectedOption === selectedName ? "" : selectedName);
-    
+    setSelectedOption(selectedOption === selectedName ? '' : selectedName);
+
     if (!moreSelected) {
       handleSubmit(selectedName, comment);
     }
-  }
+  };
 
   const handleSubmitVerification = () => {
     if (comment.length <= maxLength && (0 < selectedOption.length || 0 < comment.length)) {
@@ -109,16 +124,16 @@ export const FeedbackForm: FC<Props> = ({ onClose, onOpenFeedbackForm }) => {
       </div>
       <div className="flex flex-wrap gap-3">
         {feedbackOptions.map((option, index) => {
-          const showButton: boolean = !(option.name === "more" && moreSelected || option.name === "other" && !moreSelected);
+          const showButton: boolean = !(option.name === 'more' && moreSelected || option.name === 'other' && !moreSelected);
 
           return showButton && (
-            <button 
+            <button
               key={index}
               name={option.name}
               className={`${
-                option.name === selectedOption 
-                  ? "border-gray-100 bg-gray-100 text-gray-900"
-                  : "border-gray-400 transition-colors duration-200 hover:bg-gray-600"
+                option.name === selectedOption
+                  ? 'border-gray-100 bg-gray-100 text-gray-900'
+                  : 'border-gray-400 transition-colors duration-200 hover:bg-gray-600'
                 } border rounded-md px-3 py-0.5`}
               onClick={option.name === "more" ? handleSelectMore : handleSelectOption}
             >
@@ -145,4 +160,4 @@ export const FeedbackForm: FC<Props> = ({ onClose, onOpenFeedbackForm }) => {
       </div>}
     </div>
   );
-}
+};
