@@ -1,11 +1,15 @@
 import { RagmanAssistant } from './assistant';
 
 export interface Message {
+  id: string
   role: Role;
   content: string;
+  rating: Rating
 }
 
 export type Role = 'assistant' | 'user';
+
+export type Rating = 'positive' | 'negative' | 'none';
 
 export interface ChatBody {
   message: Message;

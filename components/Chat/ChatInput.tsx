@@ -27,6 +27,8 @@ import HomeContext from '@/pages/home/home.context';
 
 import { PromptList } from './PromptList';
 import { VariableModal } from './VariableModal';
+
+import { v4 as uuidv4 } from 'uuid';
 import { time } from 'console';
 
 interface Props {
@@ -103,7 +105,7 @@ export const ChatInput = ({
       return;
     }
 
-    onSend({ role: 'user', content });
+    onSend({ id: uuidv4(), role: 'user', content: content, rating: 'none' });
     setContent('');
     setPlugin(null);
 
