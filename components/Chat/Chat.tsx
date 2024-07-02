@@ -159,7 +159,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                         
             const updatedMessages: Message[] = [
               ...updatedConversation.messages,
-              { id: uuidv4(), role: 'assistant', content: chunkValue, rating: 'none'},
+              { id: message.id, role: 'assistant', content: chunkValue, rating: 'none'},
             ];
             updatedConversation = {
               ...updatedConversation,

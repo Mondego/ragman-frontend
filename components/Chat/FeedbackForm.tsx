@@ -11,7 +11,7 @@ import { FeedbackOption } from '@/types/feedback';
 
 interface Props {
   onClose: () => void;
-  messageId: string;
+  interactionId: string;
   onOpenFeedbackForm: () => void;
 }
 
@@ -26,7 +26,7 @@ const feedbackOptions: FeedbackOption[] = [
   {displayName: "Other", name: "other"}
 ];
 
-export const FeedbackForm: FC<Props> = ({ onClose, messageId, onOpenFeedbackForm }) => {
+export const FeedbackForm: FC<Props> = ({ onClose, interactionId, onOpenFeedbackForm }) => {
   const { t } = useTranslation('chat');
   const maxLength = NEXT_PUBLIC_COMMENT_MAX_LENGTH;
 
@@ -62,7 +62,7 @@ export const FeedbackForm: FC<Props> = ({ onClose, messageId, onOpenFeedbackForm
     console.log(finalTag, finalComment);
 
     axios.post('http://127.0.0.1:5000/api/feedback-detail', {
-      messageId: messageId,
+      interactionId: interactionId,
       feedback: finalTag,
       comment: finalComment,
     })
