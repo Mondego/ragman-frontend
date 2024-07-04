@@ -219,7 +219,6 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
   const handleRateMessage = useCallback(
       (ratedMessage: Message, index: number) => {
       if (selectedConversation) {
-        console.log(selectedConversation);
         if (index === selectedConversation.messages.length - 1) {
           setCurrentMessage(ratedMessage);
         }
@@ -320,9 +319,9 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
   };
   const throttledScrollDown = throttle(scrollDown, 250);
 
-  const handleScrollToMessage = (msgRef: RefObject<HTMLDivElement>) => {
-    if (msgRef.current) {
-      msgRef.current.scrollIntoView({ behavior: 'smooth' });
+  const handleShowFeedbackForm = (message: Message) => {
+    if (message === currentMessage) {
+      scrollDown();
     }
   };
 
@@ -435,7 +434,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                       );
                     }}
                     onRate={handleRateMessage}
-                    onOpenFeedbackForm={handleScrollToMessage}
+                    handleShowFeedbackForm={handleShowFeedbackForm}
                   />
                 ))}
 
