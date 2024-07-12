@@ -159,7 +159,8 @@ export const ChatMessage: FC<Props> = memo(
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            messageId: message.id,
+            conversationId: selectedConversation.id,
+            index: messageIndex,
             feedback: userRating,
           }),
         })
@@ -408,7 +409,8 @@ export const ChatMessage: FC<Props> = memo(
                     {gettingFeedback && (
                       <FeedbackForm
                         onClose={handleCloseFeedbackForm}
-                        messageId={message.id}
+                        selectedConversation={selectedConversation}
+                        messageIndex={messageIndex}
                         handleShowFeedbackForm={() => {
                           if (handleShowFeedbackForm) {
                             handleShowFeedbackForm(message);

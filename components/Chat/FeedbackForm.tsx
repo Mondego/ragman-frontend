@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next';
 
 import { NEXT_PUBLIC_COMMENT_MAX_LENGTH } from '@/utils/app/const';
 
+import { Conversation } from '@/types/chat';
 import { FeedbackOption } from '@/types/feedback';
 
 import axios from 'axios';
@@ -13,7 +14,8 @@ import { Message } from 'postcss';
 
 interface Props {
   onClose: () => void;
-  messageId: string;
+  selectedConversation?: Conversation;
+  messageIndex: number;
   handleShowFeedbackForm?: () => void;
 }
 
@@ -32,7 +34,7 @@ const feedbackOptions: FeedbackOption[] = [
 ];
 
 export const FeedbackForm: FC<Props> = memo(
-  ({ onClose, messageId, handleShowFeedbackForm }) => {
+  ({ onClose, selectedConversation, messageIndex, handleShowFeedbackForm }) => {
     const { t } = useTranslation('chat');
     const maxLength = NEXT_PUBLIC_COMMENT_MAX_LENGTH;
 
@@ -70,18 +72,21 @@ export const FeedbackForm: FC<Props> = memo(
 
       console.log(finalTag, finalComment);
 
-      axios
-        .post('http://127.0.0.1:5000/api/feedback-detail', {
-          messageId: messageId,
-          feedback: finalTag,
-          comment: finalComment,
-        })
-        .then((response) => {
-          console.log('Detailed feedback sent:', response.data);
-        })
-        .catch((error) => {
-          console.error('Error sending detailed feedback:', error);
-        });
+      if (selectedConversation != null) {
+        axios
+          .post('http://127.0.0.1:5000/api/feedback-detail', {
+            conversationId: selectedConversation.id,
+            index: messageIndex,
+            feedback: finalTag,
+            comment: finalComment,
+          })
+          .then((response) => {
+            console.log('Detailed feedback sent:', response.data);
+          })
+          .catch((error) => {
+            console.error('Error sending detailed feedback:', error);
+          });
+      }
 
       onClose();
     };
