@@ -3,41 +3,51 @@ import {
   IconCopy,
   IconEdit,
   IconRobot,
-  IconTrash,
-  IconUser,
   IconThumbDown,
   IconThumbDownFilled,
   IconThumbUp,
-  IconThumbUpFilled
+  IconThumbUpFilled,
+  IconTrash,
+  IconUser,
 } from '@tabler/icons-react';
-import { FC, RefObject, memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import {
+  FC,
+  RefObject,
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { updateConversation } from "@/utils/app/conversation";
+import { updateConversation } from '@/utils/app/conversation';
 
 import { Message, Rating } from '@/types/chat';
 
-import HomeContext from "@/pages/home/home.context";
+import HomeContext from '@/pages/home/home.context';
 
-import { CodeBlock } from "../Markdown/CodeBlock";
-import { MemoizedReactMarkdown } from "../Markdown/MemoizedReactMarkdown";
+import { CodeBlock } from '../Markdown/CodeBlock';
+import { MemoizedReactMarkdown } from '../Markdown/MemoizedReactMarkdown';
+import { FeedbackForm } from './FeedbackForm';
 
-import rehypeMathjax from "rehype-mathjax";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
-import { FeedbackForm } from "./FeedbackForm";
+import rehypeMathjax from 'rehype-mathjax';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
 
 export interface Props {
   message: Message;
   messageIndex: number;
   onEdit?: (editedMessage: Message) => void;
   onRate?: (ratedMessage: Message, index: number) => void;
-  onOpenFeedbackForm?: (msgRef: RefObject<HTMLDivElement>) => void;
+  handleShowFeedbackForm?: (message: Message) => void;
 }
 
-export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit, onRate, onOpenFeedbackForm }) => {
-  const { t } = useTranslation('chat');
+export const ChatMessage: FC<Props> = memo(
+  ({ message, messageIndex, onEdit, onRate, handleShowFeedbackForm }) => {
+    const { t } = useTranslation('chat');
 
     const {
       state: {
@@ -49,28 +59,25 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit, onR
       dispatch: homeDispatch,
     } = useContext(HomeContext);
 
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [isTyping, setIsTyping] = useState<boolean>(false);
-  const [messageContent, setMessageContent] = useState(message.content);
-  const [messagedCopied, setMessageCopied] = useState(false);
-  const [gettingFeedback, setGettingFeedback] = useState<boolean>(false);
-  const [rating, setRating] = useState<Rating>(message.rating);
+    const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [isTyping, setIsTyping] = useState<boolean>(false);
+    const [messageContent, setMessageContent] = useState(message.content);
+    const [messagedCopied, setMessageCopied] = useState(false);
+    const [gettingFeedback, setGettingFeedback] = useState<boolean>(false);
+    const [rating, setRating] = useState<Rating>(message.rating);
 
-  const messageRef = useRef<Message>(message);
-
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const selfRef = useRef<HTMLDivElement>(null);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     const toggleEditing = () => {
       setIsEditing(!isEditing);
     };
 
     const handleInputChange = (
-      event: React.ChangeEvent<HTMLTextAreaElement>
+      event: React.ChangeEvent<HTMLTextAreaElement>,
     ) => {
       setMessageContent(event.target.value);
       if (textareaRef.current) {
-        textareaRef.current.style.height = "inherit";
+        textareaRef.current.style.height = 'inherit';
         textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
       }
     };
@@ -94,7 +101,7 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit, onR
 
       if (
         findIndex < messages.length - 1 &&
-        messages[findIndex + 1].role === "assistant"
+        messages[findIndex + 1].role === 'assistant'
       ) {
         messages.splice(findIndex, 2);
       } else {
@@ -107,14 +114,14 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit, onR
 
       const { single, all } = updateConversation(
         updatedConversation,
-        conversations
+        conversations,
       );
-      homeDispatch({ field: "selectedConversation", value: single });
-      homeDispatch({ field: "conversations", value: all });
+      homeDispatch({ field: 'selectedConversation', value: single });
+      homeDispatch({ field: 'conversations', value: all });
     };
 
     const handlePressEnter = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      if (e.key === "Enter" && !isTyping && !e.shiftKey) {
+      if (e.key === 'Enter' && !isTyping && !e.shiftKey) {
         e.preventDefault();
         handleEditMessage();
       }
@@ -131,19 +138,19 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit, onR
       });
     };
 
-  const handleResponse = (userRating: Rating) => {
+    const handleResponse = (userRating: Rating) => {
       if (rating === 'none' && selectedConversation && onRate) {
         console.log(selectedConversation);
         setRating(userRating);
 
-        onRate({...message, rating: userRating}, messageIndex);
+        onRate({ ...message, rating: userRating }, messageIndex);
 
-          if (userRating === "negative") {
-            console.log("thumbs down");
-            setGettingFeedback(true);
-          } else if (userRating === "positive") {
-            console.log("thumbs up");
-          }
+        if (userRating === 'negative') {
+          console.log('thumbs down');
+          setGettingFeedback(true);
+        } else if (userRating === 'positive') {
+          console.log('thumbs up');
+        }
 
         // Add the API call here
         fetch('http://127.0.0.1:5000/api/feedback', {
@@ -152,90 +159,67 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit, onR
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            interactionId: message.id,
+            conversationId: selectedConversation.id,
+            index: messageIndex,
             feedback: userRating,
           }),
         })
-        .then(response => response.json())
-        .then(data => {
-          console.log('Success:', data);
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-        });
-        }
+          .then((response) => response.json())
+          .then((data) => {
+            console.log('Success:', data);
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
       }
+    };
 
-  const handleCloseFeedbackForm = () => {
-    setGettingFeedback(false);
-  }
-  
-  const handleScrollToFeedbackForm = () => {
-    if (gettingFeedback && selectedConversation && onOpenFeedbackForm) {
-      onOpenFeedbackForm(selfRef);
-    }
-  }
+    const handleCloseFeedbackForm = () => {
+      setGettingFeedback(false);
+    };
 
-  useEffect(() => {
+    useEffect(() => {
       setMessageContent(message.content);
-    }, 
-    [
-      message.content,
-    ]
-  )
+    }, [message.content]);
 
-  useEffect(() => {
-    setRating(message.rating);
-  }, 
-  [
-    message.rating,
-  ]
-)
+    useEffect(() => {
+      setRating(message.rating);
+    }, [message.rating]);
 
-  useEffect(() => {
+    useEffect(() => {
       if (selectedConversation?.id) {
         setGettingFeedback(false);
-        setMessageCopied(false)
+        setMessageCopied(false);
       }
-    }, [selectedConversation?.id]
-  );
+    }, [selectedConversation?.id]);
 
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'inherit';
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
-  }, [isEditing]);
+    useEffect(() => {
+      if (textareaRef.current) {
+        textareaRef.current.style.height = 'inherit';
+        textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+      }
+    }, [isEditing]);
 
-  useEffect(handleScrollToFeedbackForm,
-    [
-      gettingFeedback,
-      selectedConversation,
-      onOpenFeedbackForm,
-    ]
-  );
-
-  return (
-    <div
-      className={`group md:px-4 ${
-        message.role === 'assistant'
-          ? 'border-b border-black/10 bg-gray-50 text-gray-800 dark:border-gray-900/50 dark:bg-[#444654] dark:text-gray-100'
-          : 'border-b border-black/10 bg-white text-gray-800 dark:border-gray-900/50 dark:bg-[#343541] dark:text-gray-100'
-      }`}
-      style={{ overflowWrap: 'anywhere' }}
-      ref={selfRef}
-    >
-      <div className="relative m-auto flex p-4 text-base md:max-w-2xl md:gap-6 md:py-6 lg:max-w-2xl lg:px-0 xl:max-w-3xl">
-        <div className="min-w-[40px] text-right font-bold">
-          {message.role === 'assistant' ? (
-            <IconRobot size={30} />
-          ) : (
-            <IconUser size={30} />
-          )}
-        </div>
+    return (
+      <div
+        className={`group md:px-4 ${
+          message.role === 'assistant'
+            ? 'border-b border-black/10 bg-gray-50 text-gray-800 dark:border-gray-900/50 dark:bg-[#444654] dark:text-gray-100'
+            : 'border-b border-black/10 bg-white text-gray-800 dark:border-gray-900/50 dark:bg-[#343541] dark:text-gray-100'
+        }`}
+        style={{ overflowWrap: 'anywhere' }}
+      >
+        <div className="relative m-auto flex p-4 text-base md:max-w-2xl md:gap-6 md:py-6 lg:max-w-2xl lg:px-0 xl:max-w-3xl">
+          <div className="min-w-[40px] text-right font-bold">
+            {message.role === 'assistant' ? (
+              <IconRobot size={30} />
+            ) : (
+              <IconUser size={30} />
+            )}
+          </div>
 
           <div className="prose mt-[-2px] w-full dark:prose-invert">
-            {message.role === "user" ? (
+            {message.role === 'user' ? (
               <div className="flex w-full">
                 {isEditing ? (
                   <div className="flex w-full flex-col">
@@ -248,12 +232,12 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit, onR
                       onCompositionStart={() => setIsTyping(true)}
                       onCompositionEnd={() => setIsTyping(false)}
                       style={{
-                        fontFamily: "inherit",
-                        fontSize: "inherit",
-                        lineHeight: "inherit",
-                        padding: "0",
-                        margin: "0",
-                        overflow: "hidden",
+                        fontFamily: 'inherit',
+                        fontSize: 'inherit',
+                        lineHeight: 'inherit',
+                        padding: '0',
+                        margin: '0',
+                        overflow: 'hidden',
                       }}
                     />
 
@@ -263,7 +247,7 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit, onR
                         onClick={handleEditMessage}
                         disabled={messageContent.trim().length <= 0}
                       >
-                        {t("Save & Submit")}
+                        {t('Save & Submit')}
                       </button>
                       <button
                         className="h-[40px] rounded-md border border-neutral-300 px-4 py-1 text-sm font-medium text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
@@ -272,7 +256,7 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit, onR
                           setIsEditing(false);
                         }}
                       >
-                        {t("Cancel")}
+                        {t('Cancel')}
                       </button>
                     </div>
                   </div>
@@ -308,7 +292,7 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit, onR
                   components={{
                     code({ node, inline, className, children, ...props }) {
                       if (children.length) {
-                        if (children[0] == "▍") {
+                        if (children[0] == '▍') {
                           return (
                             <span className="animate-pulse cursor-default mt-1">
                               ▍
@@ -316,16 +300,19 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit, onR
                           );
                         }
 
-                        children[0] = (children[0] as string).replace("`▍`", "▍");
+                        children[0] = (children[0] as string).replace(
+                          '`▍`',
+                          '▍',
+                        );
                       }
 
-                      const match = /language-(\w+)/.exec(className || "");
+                      const match = /language-(\w+)/.exec(className || '');
 
                       return !inline ? (
                         <CodeBlock
                           key={Math.random()}
-                          language={(match && match[1]) || ""}
-                          value={String(children).replace(/\n$/, "")}
+                          language={(match && match[1]) || ''}
+                          value={String(children).replace(/\n$/, '')}
                           {...props}
                         />
                       ) : (
@@ -359,14 +346,15 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit, onR
                 >
                   {`${message.content}${
                     messageIsStreaming &&
-                    messageIndex == (selectedConversation?.messages.length ?? 0) - 1
-                      ? "`▍`"
-                      : ""
+                    messageIndex ==
+                      (selectedConversation?.messages.length ?? 0) - 1
+                      ? '`▍`'
+                      : ''
                   }`}
                 </MemoizedReactMarkdown>
 
                 {/* BUTTONS */}
-                {message.role === "assistant" ? (
+                {message.role === 'assistant' && !messageIsStreaming ? (
                   <div className="flex flex-col gap-4">
                     <div className="mt-2 space-x-2 flex flex-row">
                       {/* CLIPBOARD */}
@@ -386,37 +374,60 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit, onR
                         )}
                       </div>
 
-                {/* THUMBS UP */}
-                <div className="invisible group-hover:visible focus:visible md:-mr-0 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
-                  <button
-                    className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-                    onClick={() => console.log(handleResponse('positive'))}
-                  >
-                    {rating === "positive" ? <IconThumbUpFilled size={20} /> : <IconThumbUp size={20} />}
-                  </button>
-                </div>
+                      {/* THUMBS UP */}
+                      <div className="invisible group-hover:visible focus:visible md:-mr-0 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
+                        <button
+                          className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                          onClick={() =>
+                            console.log(handleResponse('positive'))
+                          }
+                        >
+                          {rating === 'positive' ? (
+                            <IconThumbUpFilled size={20} />
+                          ) : (
+                            <IconThumbUp size={20} />
+                          )}
+                        </button>
+                      </div>
 
-
-                {/* THUMBS DOWN */}
-                <div className="invisible group-hover:visible focus:visible md:-mr-0 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
-                  <button
-                    className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-                    onClick={() => console.log(handleResponse('negative'))}
-                  >
-                    {rating === "negative" ? <IconThumbDownFilled size={20} /> : <IconThumbDown size={20} />}
-                  </button>
-                </div>
+                      {/* THUMBS DOWN */}
+                      <div className="invisible group-hover:visible focus:visible md:-mr-0 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
+                        <button
+                          className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                          onClick={() =>
+                            console.log(handleResponse('negative'))
+                          }
+                        >
+                          {rating === 'negative' ? (
+                            <IconThumbDownFilled size={20} />
+                          ) : (
+                            <IconThumbDown size={20} />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                    {gettingFeedback && (
+                      <FeedbackForm
+                        onClose={handleCloseFeedbackForm}
+                        selectedConversation={selectedConversation}
+                        messageIndex={messageIndex}
+                        handleShowFeedbackForm={() => {
+                          if (handleShowFeedbackForm) {
+                            handleShowFeedbackForm(message);
+                          }
+                        }}
+                      />
+                    )}
+                  </div>
+                ) : (
+                  <div></div>
+                )}
               </div>
-              {gettingFeedback && <FeedbackForm onClose={handleCloseFeedbackForm} interactionId={message.id} onOpenFeedbackForm={handleScrollToFeedbackForm}/>}
-            </div>
-          ) : (
-            <div></div>
-          )}
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  },
+);
 ChatMessage.displayName = 'ChatMessage';

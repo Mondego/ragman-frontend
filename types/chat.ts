@@ -1,7 +1,6 @@
 import { RagmanAssistant } from './assistant';
 
 export interface Message {
-  id: string
   role: Role;
   content: string;
   rating: Rating

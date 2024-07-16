@@ -33,8 +33,6 @@ import { AssistantSelect } from './AssistantSelect';
 import { MemoizedChatMessage } from './MemoizedChatMessage';
 import home from '@/pages/home';
 
-import { v4 as uuidv4 } from 'uuid';
-
 interface Props {
   stopConversationRef: MutableRefObject<boolean>;
 }
@@ -159,7 +157,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                         
             const updatedMessages: Message[] = [
               ...updatedConversation.messages,
-              { id: message.id, role: 'assistant', content: chunkValue, rating: 'none'},
+              { role: 'assistant', content: chunkValue, rating: 'none'},
             ];
             updatedConversation = {
               ...updatedConversation,
@@ -203,8 +201,9 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           }
           homeDispatch({ field: 'conversations', value: updatedConversations });
           saveConversations(updatedConversations);
-          homeDispatch({ field: 'messageIsStreaming', value: false });
         } 
+        
+        homeDispatch({ field: 'messageIsStreaming', value: false });
       }
     },
     [
@@ -219,7 +218,6 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
   const handleRateMessage = useCallback(
       (ratedMessage: Message, index: number) => {
       if (selectedConversation) {
-        console.log(selectedConversation);
         if (index === selectedConversation.messages.length - 1) {
           setCurrentMessage(ratedMessage);
         }
@@ -320,9 +318,9 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
   };
   const throttledScrollDown = throttle(scrollDown, 250);
 
-  const handleScrollToMessage = (msgRef: RefObject<HTMLDivElement>) => {
-    if (msgRef.current) {
-      msgRef.current.scrollIntoView({ behavior: 'smooth' });
+  const handleShowFeedbackForm = (message: Message) => {
+    if (message === currentMessage) {
+      scrollDown();
     }
   };
 
@@ -435,7 +433,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                       );
                     }}
                     onRate={handleRateMessage}
-                    onOpenFeedbackForm={handleScrollToMessage}
+                    handleShowFeedbackForm={handleShowFeedbackForm}
                   />
                 ))}
 
