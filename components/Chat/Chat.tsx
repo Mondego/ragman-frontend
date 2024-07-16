@@ -201,8 +201,9 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           }
           homeDispatch({ field: 'conversations', value: updatedConversations });
           saveConversations(updatedConversations);
-          homeDispatch({ field: 'messageIsStreaming', value: false });
         } 
+        
+        homeDispatch({ field: 'messageIsStreaming', value: false });
       }
     },
     [
