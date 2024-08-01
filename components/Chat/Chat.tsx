@@ -1,6 +1,7 @@
 import { IconClearAll, IconSettings } from '@tabler/icons-react';
 import {
   MutableRefObject,
+  RefObject,
   memo,
   useCallback,
   useContext,
@@ -30,6 +31,7 @@ import { ChatLoader } from './ChatLoader';
 import { ErrorMessageDiv } from './ErrorMessageDiv';
 import { AssistantSelect } from './AssistantSelect';
 import { MemoizedChatMessage } from './MemoizedChatMessage';
+import home from '@/pages/home';
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>;
@@ -67,8 +69,10 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
     async (message: Message, deleteCount = 0) => {
       if (selectedConversation) {
         let updatedConversation: Conversation;
+
         if (deleteCount) {
           const updatedMessages = [...selectedConversation.messages];
+
           for (let i = 0; i < deleteCount; i++) {
             updatedMessages.pop();
           }
@@ -153,7 +157,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                         
             const updatedMessages: Message[] = [
               ...updatedConversation.messages,
-              { role: 'assistant', content: chunkValue},
+              { role: 'assistant', content: chunkValue, rating: 'none'},
             ];
             updatedConversation = {
               ...updatedConversation,
@@ -197,8 +201,9 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           }
           homeDispatch({ field: 'conversations', value: updatedConversations });
           saveConversations(updatedConversations);
-          homeDispatch({ field: 'messageIsStreaming', value: false });
         } 
+        
+        homeDispatch({ field: 'messageIsStreaming', value: false });
       }
     },
     [
@@ -206,6 +211,57 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
       conversations,
       selectedConversation,
       stopConversationRef,
+      homeDispatch,
+    ],
+  );
+
+  const handleRateMessage = useCallback(
+      (ratedMessage: Message, index: number) => {
+      if (selectedConversation) {
+        if (index === selectedConversation.messages.length - 1) {
+          setCurrentMessage(ratedMessage);
+        }
+
+        var updatedMessages = selectedConversation.messages.map(
+          (msg, msg_index) => {
+            if (msg_index === index) {
+              return ratedMessage;
+            }
+            return msg;
+          },
+        );
+
+        const updatedConversation = {
+          ...selectedConversation,
+          messages: updatedMessages
+        }
+
+        homeDispatch({
+          field: 'selectedConversation',
+          value: updatedConversation
+        });
+        saveConversation(updatedConversation);
+
+        const updatedConversations: Conversation[] = conversations.map(
+          (conversation) => {
+            if (conversation.id === selectedConversation.id) {
+              return updatedConversation;
+            }
+            return conversation;
+          },
+        );
+        
+        homeDispatch({
+          field: 'conversations',
+          value: updatedConversations
+        });
+        saveConversations(updatedConversations);
+      }
+    },
+    [
+      conversations,
+      selectedConversation,
+      homeDispatch,
     ],
   );
 
@@ -261,6 +317,12 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
     }
   };
   const throttledScrollDown = throttle(scrollDown, 250);
+
+  const handleShowFeedbackForm = (message: Message) => {
+    if (message === currentMessage) {
+      scrollDown();
+    }
+  };
 
   // useEffect(() => {
   //   console.log('currentMessage', currentMessage);
@@ -363,12 +425,15 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                     messageIndex={index}
                     onEdit={(editedMessage) => {
                       setCurrentMessage(editedMessage);
+
                       // discard edited message and the ones that come after then resend
                       handleSend(
                         editedMessage,
                         selectedConversation?.messages.length - index,
                       );
                     }}
+                    onRate={handleRateMessage}
+                    handleShowFeedbackForm={handleShowFeedbackForm}
                   />
                 ))}
 
@@ -387,6 +452,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
             textareaRef={textareaRef}
             onSend={(message) => {
               setCurrentMessage(message);
+
               handleSend(message, 0);
             }}
             onScrollDownClick={handleScrollDown}
