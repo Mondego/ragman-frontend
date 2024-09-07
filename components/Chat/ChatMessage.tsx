@@ -354,7 +354,7 @@ export const ChatMessage: FC<Props> = memo(
                 </MemoizedReactMarkdown>
 
                 {/* BUTTONS */}
-                {message.role === 'assistant' && !messageIsStreaming ? (
+                {message.role === 'assistant' && onEdit && onRate && handleShowFeedbackForm && !messageIsStreaming ? (
                   <div className="flex flex-col gap-4">
                     <div className="mt-2 space-x-2 flex flex-row">
                       {/* CLIPBOARD */}
