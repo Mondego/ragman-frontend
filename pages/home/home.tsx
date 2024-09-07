@@ -49,7 +49,7 @@ const Home = ({
   const { getAssistants } = useApiService();
   const { getAssistantsError } = useErrorService();
   const [initialRender, setInitialRender] = useState<boolean>(true);
-
+  console.log("*",useCreateReducer);
   const contextValue = useCreateReducer<HomeInitialState>({
     initialState,
   });
