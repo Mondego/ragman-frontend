@@ -33,9 +33,10 @@ import { CodeBlock } from '../Markdown/CodeBlock';
 import { MemoizedReactMarkdown } from '../Markdown/MemoizedReactMarkdown';
 import { FeedbackForm } from './FeedbackForm';
 
-import rehypeMathjax from 'rehype-mathjax';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import remarkBreaks from 'remark-breaks';
 
 export interface Props {
   message: Message;
@@ -202,11 +203,10 @@ export const ChatMessage: FC<Props> = memo(
 
     return (
       <div
-        className={`group md:px-4 ${
-          message.role === 'assistant'
-            ? 'border-b border-black/10 bg-gray-50 text-gray-800 dark:border-gray-900/50 dark:bg-[#444654] dark:text-gray-100'
-            : 'border-b border-black/10 bg-white text-gray-800 dark:border-gray-900/50 dark:bg-[#343541] dark:text-gray-100'
-        }`}
+        className={`group md:px-4 ${message.role === 'assistant'
+          ? 'border-b border-black/10 bg-gray-50 text-gray-800 dark:border-gray-900/50 dark:bg-[#444654] dark:text-gray-100'
+          : 'border-b border-black/10 bg-white text-gray-800 dark:border-gray-900/50 dark:bg-[#343541] dark:text-gray-100'
+          }`}
         style={{ overflowWrap: 'anywhere' }}
       >
         <div className="relative m-auto flex p-4 text-base md:max-w-2xl md:gap-6 md:py-6 lg:max-w-2xl lg:px-0 xl:max-w-3xl">
@@ -286,9 +286,10 @@ export const ChatMessage: FC<Props> = memo(
             ) : (
               <div className="flex flex-col">
                 <MemoizedReactMarkdown
+                  children={message.content}
                   className="prose dark:prose-invert flex-1"
-                  remarkPlugins={[remarkGfm, remarkMath]}
-                  rehypePlugins={[rehypeMathjax]}
+                  remarkPlugins={[remarkMath, remarkGfm, remarkBreaks]}
+                  rehypePlugins={[[rehypeKatex, { output: "mathml" }]]}
                   components={{
                     code({ node, inline, className, children, ...props }) {
                       if (children.length) {
@@ -344,13 +345,12 @@ export const ChatMessage: FC<Props> = memo(
                     },
                   }}
                 >
-                  {`${message.content}${
-                    messageIsStreaming &&
+                  {/*`${message.content}${messageIsStreaming &&
                     messageIndex ==
-                      (selectedConversation?.messages.length ?? 0) - 1
-                      ? '`▍`'
-                      : ''
-                  }`}
+                    (selectedConversation?.messages.length ?? 0) - 1
+                    ? '`▍`'
+                    : ''
+                    }`*/}
                 </MemoizedReactMarkdown>
 
                 {/* BUTTONS */}

@@ -150,14 +150,13 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           done = doneReading;
           const chunkValue = decoder.decode(value);
           text += chunkValue;
-
-
+          console.log(text);
           if (isFirst) {
             isFirst = false;
 
             const updatedMessages: Message[] = [
               ...updatedConversation.messages,
-              { role: 'assistant', content: chunkValue, rating: 'none' },
+              { role: 'assistant', content: makeContentRenderable(chunkValue), rating: 'none' },
             ];
             updatedConversation = {
               ...updatedConversation,
@@ -173,7 +172,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                 if (index === updatedConversation.messages.length - 1) {
                   return {
                     ...message,
-                    content: text,
+                    content: makeContentRenderable(text),
                   };
                 }
                 return message;
@@ -324,6 +323,14 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
     }
   };
 
+  const makeContentRenderable = (messageContent: string) => {
+    return messageContent
+      .replace(/\$/g,'\\$')
+      .replace(/\\\$\\\$/g,'$$$')
+      .replace(/\\\((.*?)\\\)/g, '$$$1$')
+      .replace(/\\\[(.*?)\\\]/g, '$$$$$1$$$');
+  }
+
   // useEffect(() => {
   //   console.log('currentMessage', currentMessage);
   //   if (currentMessage) {
@@ -422,7 +429,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                   message={
                     { 
                       role: "assistant", 
-                      content: "I'm a supercalifragilisticexpialidocious AI assistant. How can I help?",
+                      content: "Disclaimer",
                       rating: "none"
                     }
                   }
