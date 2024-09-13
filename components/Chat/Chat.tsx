@@ -103,7 +103,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
         const endpoint = getEndpoint();
         let body = JSON.stringify(chatBody);
         const controller = new AbortController();
-        
+
         const response = await fetch(endpoint, {
           method: 'POST',
           headers: {
@@ -150,14 +150,13 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           done = doneReading;
           const chunkValue = decoder.decode(value);
           text += chunkValue;
-          
-          
+          console.log(text);
           if (isFirst) {
             isFirst = false;
-                        
+
             const updatedMessages: Message[] = [
               ...updatedConversation.messages,
-              { role: 'assistant', content: chunkValue, rating: 'none'},
+              { role: 'assistant', content: makeContentRenderable(chunkValue), rating: 'none' },
             ];
             updatedConversation = {
               ...updatedConversation,
@@ -173,7 +172,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                 if (index === updatedConversation.messages.length - 1) {
                   return {
                     ...message,
-                    content: text,
+                    content: makeContentRenderable(text),
                   };
                 }
                 return message;
@@ -201,8 +200,8 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           }
           homeDispatch({ field: 'conversations', value: updatedConversations });
           saveConversations(updatedConversations);
-        } 
-        
+        }
+
         homeDispatch({ field: 'messageIsStreaming', value: false });
       }
     },
@@ -216,7 +215,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
   );
 
   const handleRateMessage = useCallback(
-      (ratedMessage: Message, index: number) => {
+    (ratedMessage: Message, index: number) => {
       if (selectedConversation) {
         if (index === selectedConversation.messages.length - 1) {
           setCurrentMessage(ratedMessage);
@@ -250,7 +249,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
             return conversation;
           },
         );
-        
+
         homeDispatch({
           field: 'conversations',
           value: updatedConversations
@@ -323,6 +322,14 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
       scrollDown();
     }
   };
+
+  const makeContentRenderable = (messageContent: string) => {
+    return messageContent
+      .replace(/\$/g,'\\$')
+      .replace(/\\\$\\\$/g,'$$$')
+      .replace(/\\\((.*?)\\\)/g, '$$$1$')
+      .replace(/\\\[(.*?)\\\]/g, '$$$$$1$$$');
+  }
 
   // useEffect(() => {
   //   console.log('currentMessage', currentMessage);
@@ -397,7 +404,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                       </div>
                     ) : (
                       <div>
-                        {process.env.NEXT_PUBLIC_NAME }
+                        {process.env.NEXT_PUBLIC_NAME}
                         <div className="flex h-full flex-col space-y-4 rounded-lg border border-neutral-200 p-4 dark:border-neutral-600">
                           <AssistantSelect />
                         </div>
@@ -417,7 +424,20 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                     <IconClearAll size={18} />
                   </button>
                 </div>
-
+                <MemoizedChatMessage
+                  key={-1}
+                  message={
+                    { 
+                      role: "assistant", 
+                      content: "Disclaimer",
+                      rating: "none"
+                    }
+                  }
+                  messageIndex={-1}
+                  onEdit={undefined}
+                  onRate={undefined}
+                  handleShowFeedbackForm={undefined}
+                />
                 {selectedConversation?.messages.map((message, index) => (
                   <MemoizedChatMessage
                     key={index}
