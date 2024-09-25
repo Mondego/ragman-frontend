@@ -443,7 +443,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                   message={
                     { 
                       role: "assistant", 
-                      content: disclaimer,
+                      content: makeContentRenderable(disclaimer),
                       rating: "none"
                     }
                   }
