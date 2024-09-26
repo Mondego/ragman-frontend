@@ -17,6 +17,7 @@
     "check-node-version": "^4.2.1",
     "eventsource-parser": "^0.1.0",
     "fs": "^0.0.1-security",
+    "highlight.js": "^11.10.0",
     "i18next": "^22.4.13",
     "next": "13.2.4",
     "next-i18next": "^13.2.2",
