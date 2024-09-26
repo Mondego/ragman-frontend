@@ -1,1 +1,0 @@
-Disclaimer statement template. \(\LaTeX\) is also compatible with disclaimers as well.
