@@ -60,6 +60,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [showScrollDownButton, setShowScrollDownButton] =
     useState<boolean>(false);
+  const [disclaimer, setDisclaimer] = useState<string>('')
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -371,6 +372,19 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
     };
   }, [messagesEndRef]);
 
+  useEffect(() => {
+    const getDisclaimerText = async () => {
+      const res = await fetch('http://127.0.0.1:3333/api/disclaimer', {
+        method: "GET",
+      });
+      const data = await res.json();
+  
+      setDisclaimer(data.disclaimer);
+    };
+
+    getDisclaimerText();
+  }, []);
+
   return (
     <div className="relative flex-1 overflow-hidden bg-white dark:bg-[#343541]">
       {!apiKey ? (
@@ -424,12 +438,12 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                     <IconClearAll size={18} />
                   </button>
                 </div>
-                <MemoizedChatMessage
+                {disclaimer && <MemoizedChatMessage
                   key={-1}
                   message={
                     { 
                       role: "assistant", 
-                      content: "Disclaimer",
+                      content: makeContentRenderable(disclaimer),
                       rating: "none"
                     }
                   }
@@ -437,7 +451,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                   onEdit={undefined}
                   onRate={undefined}
                   handleShowFeedbackForm={undefined}
-                />
+                />}
                 {selectedConversation?.messages.map((message, index) => (
                   <MemoizedChatMessage
                     key={index}

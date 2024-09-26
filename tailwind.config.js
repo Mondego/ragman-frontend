@@ -7,7 +7,23 @@ module.exports = {
   ],
   darkMode: 'class',
   theme: {
-    extend: {},
+    extend: {
+      typography: (theme) => ({
+        DEFAULT: {
+          css: {
+            'code::before': { content: 'none' },
+            'code::after': { content: 'none' },
+            code: {
+              backgroundColor: theme('colors.gray.100'),
+              padding: '0.2em 0.4em',
+              borderRadius: '0.25rem',
+              fontWeight: '400',
+              fontSize: '0.875em',
+            },
+          },
+        },
+      }),
+    },
   },
   variants: {
     extend: {

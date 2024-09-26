@@ -289,7 +289,7 @@ export const ChatMessage: FC<Props> = memo(
                   children={message.content}
                   className="prose dark:prose-invert flex-1"
                   remarkPlugins={[remarkMath, remarkGfm, remarkBreaks]}
-                  rehypePlugins={[[rehypeKatex, { output: "mathml" }]]}
+                  rehypePlugins={[[rehypeKatex, { output: "mathml" }], ]}
                   components={{
                     code({ node, inline, className, children, ...props }) {
                       if (children.length) {
@@ -308,7 +308,7 @@ export const ChatMessage: FC<Props> = memo(
                       }
 
                       const match = /language-(\w+)/.exec(className || '');
-
+                      console.log(className, props);
                       return !inline ? (
                         <CodeBlock
                           key={Math.random()}
@@ -317,7 +317,7 @@ export const ChatMessage: FC<Props> = memo(
                           {...props}
                         />
                       ) : (
-                        <code className={className} {...props}>
+                        <code className="bg-gray-500 rounded px-1 py-0.5" {...props}>
                           {children}
                         </code>
                       );

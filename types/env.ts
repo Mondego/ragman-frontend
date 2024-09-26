@@ -4,4 +4,5 @@ export interface ProcessEnv {
   RAGMAN_API_KEY?: string;
   NEXT_PUBLIC_MAX_LENGTH?: number;
   NEXT_PUBLIC_COMMENT_MAX_LENGTH?: number;
+  NEXT_PUBLIC_DISCLAIMER_MESSAGE_FILE_PATH?: string;
 }

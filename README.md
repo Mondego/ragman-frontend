@@ -62,7 +62,7 @@ When deploying the application, the following environment variables can be set:
 | NEXT_PUBLIC_NAME                  |                                | The user-facing name of the app                                    |
 | NEXT_PUBLIC_MAX_LENGTH            |   1000                         | The maximum number of characters the user can send in a message                                |
 | NEXT_PUBLIC_COMMENT_MAX_LENGTH            |   1000                         | The maximum number of characters the user can enter in a comment                                |
-
+| NEXT_PUBLIC_DISCLAIMER_MESSAGE_FILE_PATH            |                            | File path to a disclaimer message displayed at the top of each conversation                                |
 
 ## Contact
 
